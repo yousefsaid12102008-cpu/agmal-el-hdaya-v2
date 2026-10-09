@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080812">
+<title>أجمل الهدايا | Smart Management</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#080812;
+  --panel:rgba(19,19,39,.78);
+  --panel2:#15152a;
+  --line:rgba(255,255,255,.085);
+  --text:#f6f4ff;
+  --muted:#9291b3;
+  --purple:#a477ff;
+  --blue:#58d5ff;
+  --pink:#fa83dc;
+  --green:#48e5aa;
+  --red:#ff6b88;
+  --gold:#ffd27c;
+  --radius:22px;
+  --shadow:0 25px 90px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Cairo',sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  overflow-x:hidden;
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+
+/* ===== ANIMATED BACKGROUND ===== */
+
+.ambient{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  overflow:hidden;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% -20%,#35205e 0%,transparent 48%),
+    radial-gradient(ellipse at 100% 70%,#102a48 0%,transparent 40%),
+    #080812;
+}
+
+.orb{
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  filter:blur(100px);
+  opacity:.19;
+  animation:floatOrb 16s ease-in-out infinite alternate;
+}
+
+.orb.one{background:#9357ff;top:5%;right:-130px}
+.orb.two{background:#1f9eff;bottom:-100px;left:-120px;animation-delay:-6s}
+.orb.three{background:#eb69d6;top:55%;left:35%;width:200px;height:200px;opacity:.09;animation-delay:-9s}
+
+.grid-bg{
+  position:absolute;
+  inset:0;
+  opacity:.12;
+  background-image:
+    linear-gradient(rgba(180,170,255,.09) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,170,255,.09) 1px,transparent 1px);
+  background-size:55px 55px;
+  mask-image:linear-gradient(to bottom,black,transparent 85%);
+}
+
+@keyframes floatOrb{
+  from{transform:translate(0,0) scale(1)}
+  to{transform:translate(-60px,45px) scale(1.2)}
+}
+
+@keyframes appear{
+  from{opacity:0;transform:translateY(18px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes glow{
+  0%,100%{box-shadow:0 0 18px #9d75ff20}
+  50%{box-shadow:0 0 38px #9d75ff50}
+}
+
+@keyframes shimmer{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 #a477ff45}
+  50%{box-shadow:0 0 0 9px #a477ff00}
+}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(15px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+@keyframes rise{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== LOGIN ===== */
+
+#authPage{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:25px;
+}
+
+.auth-shell{
+  width:100%;
+  max-width:1080px;
+  min-height:650px;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  border:1px solid #ffffff13;
+  border-radius:30px;
+  overflow:hidden;
+  background:#101020b8;
+  backdrop-filter:blur(28px);
+  box-shadow:0 35px 120px #0008,0 0 70px #8e63ff09;
+  animation:appear .8s ease both;
+}
+
+.auth-visual{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:43px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 20% 10%,#b17cff30,transparent 50%),
+    linear-gradient(145deg,#20143e,#111329 60%,#102538);
+  border-left:1px solid #ffffff0b;
+}
+
+.auth-visual:before{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  border:1px solid #ffffff12;
+  border-radius:50%;
+  left:-200px;
+  bottom:-200px;
+  box-shadow:0 0 0 45px #ffffff04,0 0 0 90px #ffffff03;
+  animation:floatOrb 20s ease-in-out infinite alternate;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  position:relative;
+  z-index:1;
+}
+
+.brand-mark{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:51px;
+  height:51px;
+  flex-shrink:0;
+  border-radius:17px;
+  color:white;
+  font-size:24px;
+  font-weight:900;
+  background:linear-gradient(135deg,#bd96ff,#7950ec 55%,#4b9df5);
+  box-shadow:0 9px 30px #9568ff50;
+}
+
+.brand-mark:after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border:1px solid #bba2ff38;
+  border-radius:20px;
+}
+
+.brand-name{font-weight:900;font-size:17px}
+.brand-sub{font-size:10px;color:#aaa5cc;letter-spacing:1px}
+
+.hero-content{
+  position:relative;
+  z-index:1;
+  margin:30px 0;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 13px;
+  border-radius:30px;
+  background:#ffffff0b;
+  border:1px solid #ffffff13;
+  font-size:11px;
+  color:#d8ceff;
+}
+
+.pill-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+}
+
+.hero-title{
+  margin:24px 0 15px;
+  font-size:clamp(29px,4vw,47px);
+  line-height:1.55;
+  font-weight:900;
+}
+
+.gradient-text{
+  background:linear-gradient(100deg,#d2b9ff 5%,#a58bff 35%,#73dbff 75%,#d2b9ff);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:shimmer 7s linear infinite;
+}
+
+.hero-description{
+  max-width:390px;
+  font-size:13px;
+  line-height:2.2;
+  color:#bcb8dc;
+}
+
+.feature-cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:27px;
+}
+
+.feature-card{
+  padding:14px;
+  border:1px solid #ffffff11;
+  border-radius:16px;
+  background:#ffffff07;
+  backdrop-filter:blur(10px);
+  transition:.3s;
+}
+
+.feature-card:hover{
+  transform:translateY(-5px);
+  background:#ffffff0c;
+  border-color:#ad8aff45;
+}
+
+.feature-icon{
+  font-size:22px;
+  display:block;
+  margin-bottom:8px;
+}
+
+.feature-card strong{font-size:12px;display:block}
+.feature-card small{font-size:10px;color:#a7a3c7}
+
+.hero-footer{
+  position:relative;
+  z-index:1;
+  font-size:11px;
+  color:#918cac;
+}
+
+/* login form */
+
+.auth-form{
+  padding:44px clamp(23px,4vw,48px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.form-topline{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+.form-topline:before{
+  content:"";
+  width:22px;
+  height:2px;
+  background:var(--purple);
+  border-radius:3px;
+}
+
+.auth-heading{
+  margin:0;
+  font-size:27px;
+  font-weight:900;
+}
+
+.auth-subtitle{
+  font-size:12px;
+  line-height:2;
+  color:var(--muted);
+  margin:7px 0 27px;
+}
+
+.field{margin-bottom:18px}
+
+.field label{
+  display:block;
+  font-size:12px;
+  margin-bottom:9px;
+  color:#dcd8f0;
+  font-weight:700;
+}
+
+.input-shell{position:relative}
+
+.input-shell input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:14px 15px;
+  border-radius:13px;
+  background:#0b0b18;
+  color:white;
+  border:1px solid #ffffff13;
+  outline:none;
+  transition:.25s;
+}
+
+.input-shell input{padding-left:45px}
+
+.input-shell input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#a477ff;
+  box-shadow:0 0 0 4px #a477ff13;
+  background:#111025;
+}
+
+.input-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#8f8bad;
+  pointer-events:none;
+}
+
+.toggle-password{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:0;
+  color:#aaa5cc;
+  padding:5px;
+}
+
+.primary-btn{
+  width:100%;
+  min-height:49px;
+  border:1px solid #ffffff14;
+  border-radius:13px;
+  color:white;
+  font-weight:900;
+  background:linear-gradient(105deg,#9565f5,#7255e9 55%,#5a77ee);
+  background-size:200% auto;
+  box-shadow:0 9px 25px #7957eb30;
+  transition:.3s;
+}
+
+.primary-btn:hover{
+  transform:translateY(-2px);
+  background-position:right center;
+  box-shadow:0 12px 32px #7957eb55;
+}
+
+.auth-switch{
+  margin-top:21px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.text-btn{
+  border:0;
+  padding:0;
+  background:none;
+  color:#b79cff;
+  font-weight:800;
+}
+
+.demo-box{
+  margin-top:20px;
+  padding:12px 14px;
+  border:1px dashed #ffffff19;
+  border-radius:13px;
+  background:#ffffff04;
+  color:#aaa6c7;
+  font-size:11px;
+  line-height:2;
+}
+
+.demo-box strong{color:#ded4ff}
+
+.auth-error{
+  padding:10px 12px;
+  background:#ff6b8810;
+  border:1px solid #ff6b8830;
+  border-radius:10px;
+  color:#ff9cac;
+  font-size:12px;
+  margin-bottom:15px;
+}
+
+/* ===== APPLICATION ===== */
+
+#app{min-height:100vh}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:30;
+  min-height:76px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:12px 27px;
+  background:#090913d9;
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid #ffffff0b;
+}
+
+.topbar-right,.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.topbar .brand-mark{width:42px;height:42px;border-radius:14px;font-size:20px}
+.topbar .brand-mark:after{border-radius:17px}
+.topbar .brand-name{font-size:15px}
+.topbar .brand-sub{font-size:9px}
+
+.icon-btn{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  color:#c9c5e7;
+  background:#ffffff06;
+  border:1px solid #ffffff0d;
+  border-radius:13px;
+  transition:.2s;
+}
+
+.icon-btn:hover{
+  background:#a477ff17;
+  color:white;
+  border-color:#a477ff35;
+}
+
+.online-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);
+  display:inline-block;
+  box-shadow:0 0 10px #48e5aa88;
+  margin-left:5px;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 12px 6px 7px;
+  border:1px solid #ffffff0b;
+  border-radius:15px;
+  background:#ffffff04;
+}
+
+.user-avatar{
+  width:37px;height:37px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  background:linear-gradient(140deg,#c19aff,#6864f5);
+  color:white;font-weight:900;
+  box-shadow:0 4px 15px #8c6aff30;
+}
+
+.user-name{font-size:12px;font-weight:800}
+.user-role{font-size:10px;color:var(--muted)}
+
+.app-layout{
+  display:grid;
+  grid-template-columns:255px minmax(0,1fr);
+  max-width:1800px;
+  margin:auto;
+  min-height:calc(100vh - 76px);
+}
+
+.sidebar{
+  padding:24px 15px;
+  border-left:1px solid #ffffff0b;
+  background:#0b0b17a8;
+  display:flex;
+  flex-direction:column;
+}
+
+.side-label{
+  font-size:10px;
+  color:#74718f;
+  font-weight:800;
+  padding:13px 13px 8px;
+  letter-spacing:.5px;
+}
+
+.nav-btn{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  min-height:47px;
+  padding:10px 13px;
+  margin:3px 0;
+  text-align:right;
+  color:#9997b8;
+  border:1px solid transparent;
+  border-radius:13px;
+  background:transparent;
+  font-size:12px;
+  font-weight:700;
+  transition:background .25s,color .25s,transform .25s;
+}
+
+.nav-btn:hover{
+  color:#f7f4ff;
+  background:#ffffff07;
+  transform:translateX(-2px);
+}
+
+.nav-btn.active{
+  color:white;
+  background:linear-gradient(100deg,#a477ff22,#8c76ff09);
+  border-color:#a477ff22;
+  box-shadow:inset -3px 0 var(--purple),0 5px 20px #0001;
+}
+
+.nav-icon{
+  width:29px;height:29px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#ffffff07;
+  font-size:15px;
+}
+
+.nav-btn.active .nav-icon{
+  background:linear-gradient(135deg,#a477ff35,#5d77ef24);
+}
+
+.nav-count{
+  margin-right:auto;
+  padding:2px 7px;
+  border-radius:7px;
+  background:#ffbd6718;
+  color:var(--gold);
+  font-size:10px;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+  padding-top:20px;
+}
+
+.plan-card{
+  padding:15px;
+  border-radius:17px;
+  border:1px solid #ffffff0e;
+  background:linear-gradient(145deg,#1a1530,#111323);
+}
+
+.plan-card strong{font-size:12px}
+.plan-card p{font-size:10px;color:var(--muted);line-height:1.9}
+.plan-progress{height:4px;border-radius:9px;background:#ffffff0d;overflow:hidden}
+.plan-progress span{display:block;width:75%;height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:9px}
+
+.main{
+  min-width:0;
+  padding:30px;
+}
+
+.page-view{
+  animation:rise .4s ease both;
+}
+
+.page-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.page-kicker{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#aaa4d0;
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.page-title{
+  font-size:26px;
+  line-height:1.5;
+  font-weight:900;
+  margin:0;
+  letter-spacing:-.5px;
+}
+
+.page-subtitle{
+  color:var(--muted);
+  font-size:12px;
+  margin:6px 0 0;
+}
+
+.header-actions{display:flex;gap:9px;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  min-height:41px;
+  padding:9px 15px;
+  border:1px solid transparent;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:800;
+  transition:.25s;
+}
+
+.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.btn-primary{color:white;background:linear-gradient(115deg,#986bfa,#6e64eb);box-shadow:0 6px 20px #7659e82a}
+.btn-secondary{color:#ddd9f5;background:#ffffff06;border-color:#ffffff10}
+.btn-success{color:var(--green);background:#48e5aa12;border-color:#48e5aa25}
+.btn-danger{color:var(--red);background:#ff6b8812;border-color:#ff6b8825}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat-card{
+  position:relative;
+  overflow:hidden;
+  padding:20px;
+  min-width:0;
+  border:1px solid #ffffff0c;
+  border-radius:20px;
+  background:linear-gradient(145deg,#17172cbb,#10101fdd);
+  backdrop-filter:blur(15px);
+  transition:transform .3s,border-color .3s;
+  animation:rise .5s ease both;
+}
+
+.stat-card:nth-child(2){animation-delay:.05s}
+.stat-card:nth-child(3){animation-delay:.1s}
+.stat-card:nth-child(4){animation-delay:.15s}
+
+.stat-card:hover{
+  transform:translateY(-5px);
+  border-color:#a477ff35;
+}
+
+.stat-card:before{
+  content:"";
+  position:absolute;
+  width:130px;height:130px;
+  border-radius:50%;
+  left:-55px;bottom:-75px;
+  background:var(--accent,#a477ff);
+  opacity:.12;
+  filter:blur(40px);
+}
+
+.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-icon{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border:1px solid #ffffff0c;
+  border-radius:14px;
+  background:linear-gradient(145deg,#ffffff0c,#ffffff02);
+  font-size:20px;
+}
+
+.stat-number{
+  position:relative;
+  margin:18px 0 8px;
+  font-size:clamp(19px,2vw,27px);
+  font-weight:900;
+  letter-spacing:-.5px;
+  overflow-wrap:anywhere;
+}
+
+.stat-foot{font-size:10px;color:var(--muted)}
+.stat-foot .positive{color:var(--green)}
+
+.content-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(260px,1fr);
+  gap:18px;
+}
+
+.panel{
+  min-width:0;
+  padding:21px;
+  margin-bottom:18px;
+  border:1px solid #ffffff0c;
+  border-radius:20px;
+  background:linear-gradient(145deg,#15152abb,#10101fdd);
+  box-shadow:0 8px 35px #0000000c;
+  backdrop-filter:blur(12px);
+}
+
+.panel-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.panel-title{font-size:14px;font-weight:900;margin:0}
+.panel-caption{font-size:10px;color:var(--muted);margin-top:5px}
+
+.search-box{
+  width:min(100%,300px);
+  padding:11px 14px;
+  border:1px solid #ffffff10;
+  border-radius:12px;
+  background:#0b0b18;
+  color:white;
+  font-size:12px;
+  outline:none;
+}
+
+.search-box:focus{border-color:#a477ff77}
+
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid #ffffff09;
+  border-radius:13px;
+}
+
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th,td{padding:13px 14px;text-align:right;border-bottom:1px solid #ffffff08;font-size:11px}
+th{background:#ffffff04;color:#9692b5;font-weight:800}
+td{color:#e3e0f6}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:#ffffff04}
+tbody tr:last-child td{border-bottom:0}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:700;
+}
+.badge:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge.success{color:var(--green);background:#48e5aa12}
+.badge.pending{color:var(--gold);background:#ffd27c12}
+.badge.danger{color:var(--red);background:#ff6b8812}
+.badge.info{color:var(--blue);background:#58d5ff12}
+
+.activity-list{display:grid;gap:10px}
+.activity{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:1px solid #ffffff08;
+  border-radius:14px;
+  background:#ffffff03;
+  transition:.2s;
+}
+.activity:hover{background:#ffffff07;border-color:#ffffff13}
+.activity-info{display:flex;align-items:center;gap:11px;min-width:0}
+.activity-icon{
+  display:grid;place-items:center;
+  width:39px;height:39px;flex-shrink:0;
+  border-radius:12px;background:#a477ff12;
+}
+.activity strong{display:block;font-size:11px}
+.activity small{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.activity-amount{font-size:11px;font-weight:900;white-space:nowrap}
+.positive{color:var(--green)}
+.negative{color:var(--red)}
+
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quick-card{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  padding:16px;
+  min-height:115px;
+  text-align:right;
+  color:white;
+  background:#ffffff03;
+  border:1px solid #ffffff0b;
+  border-radius:15px;
+  transition:.25s;
+}
+.quick-card:hover{
+  transform:translateY(-4px);
+  background:#a477ff0a;
+  border-color:#a477ff35;
+}
+.quick-card .q-icon{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  border-radius:12px;background:#a477ff14;font-size:19px;
+}
+.quick-card strong{font-size:11px}
+.quick-card small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.form-field{margin-bottom:16px}
+.form-field.full{grid-column:1/-1}
+.form-field label{display:block;font-size:11px;color:#c9c5e6;margin-bottom:8px;font-weight:700}
+.form-field input,.form-field select,.form-field textarea{
+  width:100%;
+  padding:12px 13px;
+  border-radius:12px;
+  border:1px solid #ffffff10;
+  background:#0b0b18;
+  color:white;
+  outline:none;
+  font-size:12px;
+  transition:.2s;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:#a477ff77}
+.form-field select option{background:#15152a;color:white}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:17px}
+
+.empty-state{text-align:center;padding:28px 10px;color:var(--muted);font-size:11px}
+.empty-state .empty-icon{font-size:28px;margin-bottom:8px;opacity:.7;display:block}
+
+.chart-bars{
+  height:170px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+  gap:13px;
+  padding:15px 5px 0;
+  border-bottom:1px solid #ffffff10;
+}
+.chart-col{height:100%;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:9px}
+.chart-bar{
+  width:min(35px,70%);
+  min-height:5px;
+  border-radius:8px 8px 3px 3px;
+  background:linear-gradient(180deg,#65d6ff,#9069ff 85%);
+  box-shadow:0 0 20px #8b72ff15;
+  transform-origin:bottom;
+  animation:barGrow .7s ease both;
+}
+@keyframes barGrow{from{transform:scaleY(.05);opacity:.2}to{transform:scaleY(1);opacity:1}}
+.chart-label{font-size:10px;color:var(--muted)}
+
+.progress-row{margin:16px 0}
+.progress-meta{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin-bottom:8px}
+.progress-meta span:last-child{color:var(--muted)}
+.progress-track{height:6px;border-radius:9px;background:#ffffff0a;overflow:hidden}
+.progress-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#8c6cff,#5ecfff);transition:width .7s}
+
+.settings-note{
+  padding:14px;
+  border:1px solid #ffd27c1a;
+  background:#ffd27c08;
+  border-radius:13px;
+  color:#cfc2a8;
+  font-size:11px;
+  line-height:2;
+}
+
+.toast{
+  position:fixed;
+  z-index:100;
+  bottom:25px;
+  left:25px;
+  max-width:calc(100vw - 50px);
+  padding:14px 18px;
+  border:1px solid #ffffff15;
+  border-radius:14px;
+  background:#1a1930f5;
+  box-shadow:var(--shadow);
+  color:white;
+  font-size:12px;
+  animation:appear .25s ease both;
+}
+
+.mobile-overlay{
+  display:none;
+  position:fixed;
+  inset:76px 0 0;
+  z-index:19;
+  background:#0009;
+  backdrop-filter:blur(3px);
+}
+
+.mobile-menu{display:none}
+
+/* ===== RESPONSIVE ===== */
+
+@media(min-width:1400px){
+  .main{padding:38px}
+  .stats-grid{gap:20px}
+  .stat-card{padding:25px}
+}
+
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .content-grid{grid-template-columns:1fr}
+  .auth-shell{max-width:850px}
+  .auth-visual{padding:32px}
+}
+
+@media(max-width:760px){
+  #authPage{padding:12px}
+  .auth-shell{grid-template-columns:1fr;max-width:460px;border-radius:24px}
+  .auth-visual{padding:24px;min-height:auto}
+  .hero-content{margin:22px 0 12px}
+  .hero-title{font-size:27px;margin:15px 0 8px}
+  .hero-description{font-size:11px;line-height:1.9;margin-bottom:0}
+  .feature-cards{display:none}
+  .hero-footer{font-size:10px}
+  .auth-form{padding:27px 23px 30px}
+  .auth-heading{font-size:24px}
+  .auth-subtitle{margin-bottom:22px}
+  .topbar{padding:11px 13px;min-height:68px}
+  .topbar .brand-mark{width:37px;height:37px}
+  .topbar .brand-name{font-size:13px}
+  .topbar .brand-sub{font-size:8px}
+  .user-chip{padding:4px;border:0;background:transparent}
+  .user-chip>div:nth-child(2){display:none}
+  .user-avatar{width:35px;height:35px}
+  .topbar-left{gap:8px}
+  .app-layout{display:block;min-height:calc(100vh - 68px)}
+  .sidebar{
+    display:none;
+    position:fixed;
+    z-index:25;
+    top:68px;bottom:0;right:0;
+    width:270px;max-width:85vw;
+    overflow-y:auto;
+    background:#0e0d1cf7;
+    backdrop-filter:blur(25px);
+    box-shadow:-20px 0 70px #0008;
+    animation:slideIn .25s ease both;
+  }
+  .sidebar.open{display:flex}
+  .mobile-overlay.open{display:block}
+  .mobile-menu{display:grid}
+  .main{padding:22px 14px}
+  .page-title{font-size:23px}
+  .page-header{margin-bottom:19px}
+  .stats-grid{gap:10px}
+  .stat-card{padding:14px;border-radius:16px}
+  .stat-icon{width:35px;height:35px;font-size:17px;border-radius:11px}
+  .stat-number{font-size:19px;margin:13px 0 6px}
+  .stat-label{font-size:10px}
+  .stat-foot{font-size:9px}
+  .panel{padding:15px;border-radius:16px}
+  .panel-heading{margin-bottom:14px}
+  .quick-grid{gap:8px}
+  .quick-card{padding:12px;min-height:105px}
+  .form-grid{grid-template-columns:1fr}
+  .form-field.full{grid-column:auto}
+  .toolbar{align-items:stretch}
+  .toolbar .search-box{width:100%;max-width:none}
+  .toast{bottom:15px;left:15px}
+}
+
+@media(max-width:360px){
+  .stats-grid{grid-template-columns:1fr}
+  .quick-grid{grid-template-columns:1fr 1fr}
+  .hero-title{font-size:24px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ambient">
+  <div class="grid-bg"></div>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+</div>
+
+<!-- LOGIN -->
+<section id="authPage">
+  <div class="auth-shell">
+
+    <div class="auth-visual">
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div>
+          <div class="brand-name">أجمل الهدايا</div>
+          <div class="brand-sub">SMART BUSINESS SYSTEM</div>
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <div class="pill"><span class="pill-dot"></span> نظام الإدارة الذكي</div>
+        <h1 class="hero-title">
+          كل تفاصيل مكتبتك<br>
+          في مكان <span class="gradient-text">واحد.</span>
+        </h1>
+        <p class="hero-description">
+          تحكم في المبيعات والمخزون والعملاء والحسابات من واجهة واحدة،
+          مصممة لتسهيل شغلك اليومي.
+        </p>
+
+        <div class="feature-cards">
+          <div class="feature-card">
+            <span class="feature-icon">◈</span>
+            <strong>إدارة متكاملة</strong>
+            <small>تابع أعمالك بسهولة</small>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">▤</span>
+            <strong>تقارير واضحة</strong>
+            <small>راجع أرقام مكتبتك</small>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">▦</span>
+            <strong>مخزون منظم</strong>
+            <small>تابع الأصناف والكميات</small>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">♧</span>
+            <strong>واجهة عربية</strong>
+            <small>مصممة للاستخدام اليومي</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-footer">© 2026 أجمل الهدايا · جميع الحقوق محفوظة</div>
+    </div>
+
+    <div class="auth-form">
+
+      <div id="loginView">
+        <div class="form-topline">مساحة العمل الخاصة بك</div>
+        <h2 class="auth-heading">أهلًا بعودتك 👋</h2>
+        <p class="auth-subtitle">سجّل دخولك للانتقال إلى لوحة التحكم.</p>
+
+        <div id="loginError" class="auth-error hidden"></div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="username">اسم المستخدم</label>
+            <div class="input-shell">
+              <input id="username" autocomplete="username" placeholder="أدخل اسم المستخدم" required>
+              <span class="input-icon">♙</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">كلمة المرور</label>
+            <div class="input-shell">
+              <input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور" required>
+              <button class="toggle-password" type="button" onclick="togglePassword()">◉</button>
+            </div>
+          </div>
+
+          <button class="primary-btn" type="submit">تسجيل الدخول <span>←</span></button>
+        </form>
+
+        <div class="demo-box">
+          <strong>بيانات تجربة الواجهة</strong><br>
+          اسم المستخدم: <strong>admin</strong><br>
+          كلمة المرور: <strong>123456</strong>
+        </div>
+
+        <div class="auth-switch">
+          موظف جديد؟
+          <button class="text-btn" onclick="showAuth('signup')">طلب إنشاء حساب</button>
+        </div>
+      </div>
+
+      <div id="signupView" class="hidden">
+        <div class="form-topline">انضم إلى فريق العمل</div>
+        <h2 class="auth-heading">إنشاء حساب</h2>
+        <p class="auth-subtitle">املأ البيانات لإرسال طلب تسجيل تجريبي.</p>
+
+        <div id="signupError" class="auth-error hidden"></div>
+
+        <form id="signupForm">
+          <div class="field">
+            <label>الاسم الكامل</label>
+            <div class="input-shell">
+              <input name="name" required maxlength="70" placeholder="اسم الموظف">
+            </div>
+          </div>
+          <div class="field">
+            <label>اسم المستخدم</label>
+            <input name="username" required minlength="3" maxlength="30" placeholder="اختر اسم مستخدم">
+          </div>
+          <div class="field">
+            <label>كلمة المرور</label>
+            <input name="password" type="password" required minlength="6" maxlength="100" placeholder="6 أحرف على الأقل">
+          </div>
+          <button class="primary-btn" type="submit">إرسال طلب التسجيل ←</button>
+        </form>
+
+        <div class="auth-switch">
+          لديك حساب؟
+          <button class="text-btn" onclick="showAuth('login')">تسجيل الدخول</button>
+        </div>
+      </div>
+
+      <div id="pendingView" class="hidden">
+        <div class="brand-mark" style="margin-bottom:20px">✓</div>
+        <h2 class="auth-heading">تم إرسال طلبك</h2>
+        <p class="auth-subtitle">في النظام الحقيقي، سيحتاج حسابك إلى موافقة المالك قبل تسجيل الدخول.</p>
+        <button class="primary-btn" onclick="showAuth('login')">العودة لتسجيل الدخول</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app" class="hidden">
+
+  <header class="topbar">
+    <div class="topbar-right">
+      <button class="icon-btn mobile-menu" onclick="toggleSidebar()" aria-label="القائمة">☰</button>
+
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div>
+          <div class="brand-name">أجمل الهدايا</div>
+          <div class="brand-sub">MANAGEMENT CONSOLE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-left">
+      <button class="icon-btn" title="تحديث الصفحة" onclick="renderPage(currentPage)">↻</button>
+      <div class="user-chip">
+        <div class="user-avatar" id="avatar">ي</div>
+        <div>
+          <div class="user-name" id="userName">بشمهندس يوسف</div>
+          <div class="user-role"><span class="online-dot"></span><span id="userRole">المالك</span></div>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="logout()" title="تسجيل الخروج">↪</button>
+    </div>
+  </header>
+
+  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar(false)"></div>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+
+      <div class="side-label">مساحة العمل</div>
+      <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">◈</span> لوحة التحكم</button>
+      <button class="nav-btn" data-page="sales"><span class="nav-icon">▤</span> الكاشير والفواتير</button>
+      <button class="nav-btn" data-page="customers"><span class="nav-icon">♧</span> العملاء والديون</button>
+      <button class="nav-btn" data-page="products"><span class="nav-icon">▦</span> المنتجات والمخزون</button>
+      <button class="nav-btn" data-page="orders"><span class="nav-icon">▣</span> طلبات الطباعة</button>
+
+      <div class="side-label">الحسابات والتقارير</div>
+      <button class="nav-btn" data-page="expenses"><span class="nav-icon">↗</span> المصروفات</button>
+      <button class="nav-btn" data-page="reports"><span class="nav-icon">◫</span> التقارير المالية</button>
+
+      <div class="side-label">إدارة النظام</div>
+      <button class="nav-btn owner-only" data-page="employees"><span class="nav-icon">♙</span> الموظفون</button>
+      <button class="nav-btn owner-only" data-page="settings"><span class="nav-icon">⚙</span> الإعدادات والنسخ</button>
+
+      <div class="sidebar-bottom">
+        <div class="plan-card">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:19px">✧</span>
+            <strong>مساحة عملك</strong>
+          </div>
+          <p>واجهة تجريبية لإدارة المكتبة. اربط قاعدة بيانات قبل استخدامها فعليًا.</p>
+          <div class="plan-progress"><span></span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:9px;color:var(--muted)">
+            <span>نسخة الواجهة</span><span>2026.1</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main" id="mainContent"></main>
+  </div>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+"use strict";
+
+const KEY="agmal_hdaya_pro_demo";
+const SESSION="agmal_hdaya_pro_session";
+
+function initialDB(){
+  return {
+    products:[],
+    customers:[],
+    sales:[],
+    orders:[],
+    expenses:[],
+    users:[],
+    payments:[],
+    settings:{
+      shopName:"مكتبة أجمل الهدايا",
+      phone:"",
+      address:"",
+      currency:"جنيه"
+    }
+  };
+}
+
+function loadDB(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    return raw?{...initialDB(),...JSON.parse(raw)}:initialDB();
+  }catch(e){
+    return initialDB();
+  }
+}
+
+let db=loadDB();
+let currentUser=null;
+let currentPage="dashboard";
+let toastTimer;
+
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(db));
+    return true;
+  }catch(e){
+    notify("تعذر حفظ البيانات في المتصفح.");
+    return false;
+  }
+}
+
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function uid(){
+  return Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+}
+
+function today(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function money(n){
+  return (Number(n)||0).toLocaleString("ar-EG",{maximumFractionDigits:2})+" "+(db.settings.currency||"جنيه");
+}
+
+function notify(message){
+  const el=document.getElementById("toast");
+  el.textContent=message;
+  el.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.add("hidden"),3000);
+}
+
+function togglePassword(){
+  const input=document.getElementById("password");
+  input.type=input.type==="password"?"text":"password";
+}
+
+function showAuth(name){
+  ["loginView","signupView","pendingView"].forEach(id=>
+    document.getElementById(id).classList.add("hidden")
+  );
+  const map={login:"loginView",signup:"signupView",pending:"pendingView"};
+  document.getElementById(map[name]).classList.remove("hidden");
+  document.getElementById("loginError").classList.add("hidden");
+  document.getElementById("signupError").classList.add("hidden");
+}
+
+document.getElementById("loginForm").addEventListener("submit",e=>{
+  e.preventDefault();
+
+  const username=document.getElementById("username").value.trim();
+  const password=document.getElementById("password").value;
+  const error=document.getElementById("loginError");
+
+  if(username==="admin"&&password==="123456"){
+    currentUser={username:"admin",name:"بشمهندس يوسف",role:"owner"};
+    sessionStorage.setItem(SESSION,JSON.stringify(currentUser));
+    enterApp();
+    return;
+  }
+
+  const user=db.users.find(u=>u.username.toLowerCase()===username.toLowerCase());
+
+  if(!user||user.password!==password){
+    error.textContent="بيانات الدخول غير صحيحة.";
+    error.classList.remove("hidden");
+    return;
+  }
+
+  if(user.status!=="approved"){
+    error.textContent="حسابك في انتظار موافقة المالك.";
+    error.classList.remove("hidden");
+    return;
+  }
+
+  currentUser={username:user.username,name:user.name,role:"employee"};
+  sessionStorage.setItem(SESSION,JSON.stringify(currentUser));
+  enterApp();
+});
+
+document.getElementById("signupForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const name=String(f.get("name")).trim();
+  const username=String(f.get("username")).trim();
+  const password=String(f.get("password"));
+  const error=document.getElementById("signupError");
+
+  if(username.toLowerCase()==="admin"||
+     db.users.some(u=>u.username.toLowerCase()===username.toLowerCase())){
+    error.textContent="اسم المستخدم مستخدم بالفعل.";
+    error.classList.remove("hidden");
+    return;
+  }
+
+  db.users.push({
+    id:uid(),name,username,password,status:"pending",createdAt:today()
+  });
+  save();
+  e.target.reset();
+  showAuth("pending");
+});
+
+function enterApp(){
+  document.getElementById("authPage").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  document.getElementById("userName").textContent=currentUser.name;
+  document.getElementById("userRole").textContent=currentUser.role==="owner"?"المالك":"موظف";
+  document.getElementById("avatar").textContent=(currentUser.name||"م").charAt(0);
+
+  document.querySelectorAll(".owner-only").forEach(el=>
+    el.classList.toggle("hidden",currentUser.role!=="owner")
+  );
+
+  renderPage(currentPage);
+}
+
+function logout(){
+  currentUser=null;
+  sessionStorage.removeItem(SESSION);
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("authPage").classList.remove("hidden");
+  toggleSidebar(false);
+  showAuth("login");
+  document.getElementById("loginForm").reset();
+}
+
+function toggleSidebar(force){
+  const side=document.getElementById("sidebar");
+  const overlay=document.getElementById("mobileOverlay");
+  const open=typeof force==="boolean"?force:!side.classList.contains("open");
+  side.classList.toggle("open",open);
+  overlay.classList.toggle("open",open);
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    if(btn.classList.contains("owner-only")&&currentUser?.role!=="owner"){
+      notify("هذه الصفحة متاحة للمالك فقط.");
+      return;
+    }
+    renderPage(btn.dataset.page);
+    toggleSidebar(false);
+  });
+});
+
+function pageHeader(title,subtitle,action=""){
+  return `<div class="page-header">
+    <div>
+      <div class="page-kicker"><span class="online-dot"></span> مساحة الإدارة / ${title}</div>
+      <h1 class="page-title">${title}</h1>
+      <p class="page-subtitle">${subtitle}</p>
+    </div>
+    <div class="header-actions">${action}</div>
+  </div>`;
+}
+
+function stat(icon,label,value,sub,color="#a477ff"){
+  return `<div class="stat-card" style="--accent:${color}">
+    <div class="stat-top">
+      <span class="stat-label">${label}</span>
+      <span class="stat-icon">${icon}</span>
+    </div>
+    <div class="stat-number">${value}</div>
+    <div class="stat-foot">${sub}</div>
+  </div>`;
+}
+
+function panel(title,body,caption=""){
+  return `<section class="panel">
+    <div class="panel-heading">
+      <div><h3 class="panel-title">${title}</h3>${caption?`<div class="panel-caption">${caption}</div>`:""}</div>
+    </div>${body}
+  </section>`;
+}
+
+function table(headers,rows){
+  return `<div class="table-wrap"><table>
+    <thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${rows||`<tr><td colspan="${headers.length}"><div class="empty-state"><span class="empty-icon">◇</span>لا توجد بيانات حتى الآن</div></td></tr>`}</tbody>
+  </table></div>`;
+}
+
+function renderPage(page){
+  currentPage=page;
+
+  if(currentUser?.role!=="owner"&&["employees","settings"].includes(page)){
+    currentPage="dashboard";
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn=>
+    btn.classList.toggle("active",btn.dataset.page===currentPage)
+  );
+
+  const renderers={
+    dashboard:renderDashboard,
+    products:renderProducts,
+    customers:renderCustomers,
+    sales:renderSales,
+    orders:renderOrders,
+    expenses:renderExpenses,
+    reports:renderReports,
+    employees:renderEmployees,
+    settings:renderSettings
+  };
+
+  (renderers[currentPage]||renderDashboard)();
+}
+
+function renderDashboard(){
+  const revenue=db.sales.filter(s=>s.date===today()).reduce((a,s)=>a+s.total,0);
+  const debt=db.customers.reduce((a,c)=>a+Number(c.debt||0),0);
+  const expenses=db.expenses.filter(e=>e.date===today()).reduce((a,e)=>a+e.amount,0);
+  const low=db.products.filter(p=>Number(p.qty)<=5).length;
+
+  const recent=[...db.sales].reverse().slice(0,5).map(s=>`
+    <div class="activity">
+      <div class="activity-info">
+        <div class="activity-icon">▤</div>
+        <div><strong>فاتورة #${esc(s.id.slice(-6))}</strong><small>${esc(s.customer)} · ${esc(s.date)}</small></div>
+      </div>
+      <div class="activity-amount positive">${money(s.total)}</div>
+    </div>`).join("")||
+    `<div class="empty-state"><span class="empty-icon">▤</span>لا توجد فواتير مسجلة حتى الآن</div>`;
+
+  const max=Math.max(1,...Array.from({length:7},(_,i)=>{
+    const d=new Date();d.setDate(d.getDate()-(6-i));
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    return db.sales.filter(s=>s.date===key).reduce((a,s)=>a+s.total,0);
+  }));
+
+  const bars=Array.from({length:7},(_,i)=>{
+    const d=new Date();d.setDate(d.getDate()-(6-i));
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const total=db.sales.filter(s=>s.date===key).reduce((a,s)=>a+s.total,0);
+    return `<div class="chart-col">
+      <div class="chart-bar" style="height:${Math.max(4,total/max*100)}%;animation-delay:${i*.06}s" title="${esc(money(total))}"></div>
+      <div class="chart-label">${d.getDate()}/${d.getMonth()+1}</div>
+    </div>`;
+  }).join("");
+
+  const lowRows=db.products.filter(p=>Number(p.qty)<=5).map(p=>`
+    <tr><td>${esc(p.name)}</td><td>${p.qty}</td><td><span class="badge danger">مخزون منخفض</span></td></tr>`
+  ).join("");
+
+  document.getElementById("mainContent").innerHTML=`
+    <div class="page-view">
+      ${pageHeader("لوحة التحكم","نظرة عامة على أداء المكتبة وحركة العمل.",
+        `<button class="btn btn-secondary" onclick="exportBackup()">↓ نسخة احتياطية</button>
+         <button class="btn btn-primary" onclick="renderPage('sales')">＋ فاتورة جديدة</button>`)}
+      <div class="stats-grid">
+        ${stat("↗","مبيعات اليوم",money(revenue),"إجمالي الفواتير اليوم","#48e5aa")}
+        ${stat("◷","الديون المستحقة",money(debt),"أرصدة العملاء","#ffd27c")}
+        ${stat("▦","أصناف المخزون",db.products.length,"إجمالي المنتجات","#58d5ff")}
+        ${stat("⚑","مخزون منخفض",low,"أصناف تحتاج متابعة","#ff6b88")}
+      </div>
+
+      <div class="content-grid">
+        <div>
+          <section class="panel">
+            <div class="panel-heading">
+              <div><h3 class="panel-title">نظرة على المبيعات</h3><div class="panel-caption">حركة المبيعات خلال آخر 7 أيام</div></div>
+              <span class="badge info">أسبوعي</span>
+            </div>
+            <div class="chart-bars">${bars}</div>
+          </section>
+          ${panel("آخر الفواتير",`<div class="activity-list">${recent}</div>`,"أحدث العمليات المسجلة")}
+        </div>
+
+        <div>
+          ${panel("الوصول السريع",`
+            <div class="quick-grid">
+              <button class="quick-card" onclick="renderPage('sales')"><span class="q-icon">▤</span><div><strong>فاتورة جديدة</strong><small>تسجيل عملية بيع</small></div></button>
+              <button class="quick-card" onclick="renderPage('products')"><span class="q-icon">▦</span><div><strong>إضافة منتج</strong><small>تحديث المخزون</small></div></button>
+              <button class="quick-card" onclick="renderPage('customers')"><span class="q-icon">♧</span><div><strong>إضافة عميل</strong><small>إدارة الحسابات</small></div></button>
+              <button class="quick-card" onclick="renderPage('orders')"><span class="q-icon">▣</span><div><strong>طلب طباعة</strong><small>متابعة التنفيذ</small></div></button>
+            </div>`)}
+          ${panel("مصروفات اليوم",`
+            <div class="stat-number">${money(expenses)}</div>
+            <div class="progress-row">
+              <div class="progress-meta"><span>عدد المصروفات اليوم</span><span>${db.expenses.filter(e=>e.date===today()).length}</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:${expenses?100:0}%"></div></div>
+            </div>
+            <button class="btn btn-secondary" onclick="renderPage('expenses')">إدارة المصروفات ←</button>`)}
+          ${panel("تنبيه المخزون",table(["المنتج","الكمية","الحالة"],lowRows),"أصناف كميتها 5 أو أقل")}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* المنتجات */
+
+function renderProducts(search=""){
+  const filtered=db.products.filter(p=>(p.name+" "+(p.code||"")).toLowerCase().includes(search.toLowerCase()));
+
+  document.getElementById("mainContent").innerHTML=`
+  <div class="page-view">
+    ${pageHeader("المنتجات والمخزون","إدارة الأصناف والكميات والأسعار.")}
+    ${panel("إضافة منتج جديد",`
+      <form id="productForm">
+        <div class="form-grid">
+          <div class="form-field"><label>اسم المنتج</label><input name="name" required placeholder="اسم المنتج"></div>
+          <div class="form-field"><label>كود المنتج</label><input name="code" placeholder="اختياري"></div>
+          <div class="form-field"><label>سعر التكلفة</label><input name="cost" type="number" min="0" step=".01" required></div>
+          <div class="form-field"><label>سعر البيع</label><input name="price" type="number" min="0" step=".01" required></div>
+          <div class="form-field"><label>الكمية</label><input name="qty" type="number" min="0" step="1" required></div>
+          <div class="form-field"><label>التصنيف</label><input name="category" placeholder="أدوات مدرسية، طباعة..."></div>
+        </div>
+        <button class="btn btn-primary">＋ إضافة المنتج</button>
+      </form>`)}
+    ${panel("قائمة المنتجات",`
+      <div class="toolbar">
+        <span class="muted small">عدد الأصناف: ${filtered.length}</span>
+        <input id="productSearch" class="search-box" placeholder="ابحث عن منتج..." value="${esc(search)}">
+      </div>
+      ${table(["المنتج","الكود","التصنيف","الكمية","التكلفة","سعر البيع","إجراء"],
+      filtered.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.code||"—")}</td><td>${esc(p.category||"—")}</td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><button class="btn btn-danger" onclick="deleteRecord('products','${p.id}')">حذف</button></td></tr>`).join(""))}`)}
+  </div>`;
+
+  document.getElementById("productSearch").addEventListener("input",e=>renderProducts(e.target.value));
+  document.getElementById("productForm").addEventListener("submit",e=>{
+    e.preventDefault();const f=new FormData(e.target);
+    db.products.push({
+      id:uid(),name:String(f.get("name")).trim(),code:String(f.get("code")).trim(),
+      cost:Number(f.get("cost")),price:Number(f.get("price")),qty:Number(f.get("qty")),
+      category:String(f.get("category")).trim()
+    });
+    save();notify("تمت إضافة المنتج بنجاح.");renderProducts();
+  });
+}
+
+/* العملاء */
+
+function renderCustomers(search=""){
+  const filtered=db.customers.filter(c=>(c.name+" "+c.phone).toLowerCase().includes(search.toLowerCase()));
+
+  document.getElementById("mainContent").innerHTML=`
+  <div class="page-view">
+    ${pageHeader("العملاء والديون","متابعة العملاء والأرصدة المستحقة.")}
+    ${panel("إضافة عميل",`
+      <form id="customerForm">
+        <div class="form-grid">
+          <div class="form-field"><label>اسم العميل</label><input name="name" required></div>
+          <div class="form-field"><label>رقم الهاتف</label><input name="phone" inputmode="tel"></div>
+          <div class="form-field full"><label>ملاحظات</label><input name="notes"></div>
+        </div>
+        <button class="btn btn-primary">＋ إضافة عميل</button>
+      </form>`)}
+    ${panel("سجل العملاء",`
+      <div class="toolbar"><span class="muted small">${filtered.length} عميل</span><input class="search-box" id="customerSearch" value="${esc(search)}" placeholder="بحث بالاسم أو الهاتف"></div>
+      ${table(["الاسم","الهاتف","الرصيد المستحق","ملاحظات","إجراء"],
+      filtered.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone||"—")}</td><td class="${c.debt>0?"negative":"positive"}">${money(c.debt)}</td><td>${esc(c.notes||"—")}</td><td><button class="btn btn-success" onclick="collectDebt('${c.id}')">تحصيل</button> <button class="btn btn-danger" onclick="deleteRecord('customers','${c.id}')">حذف</button></td></tr>`).join(""))}`)}
+  </div>`;
+
+  document.getElementById("customerSearch").addEventListener("input",e=>renderCustomers(e.target.value));
+  document.getElementById("customerForm").addEventListener("submit",e=>{
+    e.preventDefault();const f=new FormData(e.target);
+    db.customers.push({id:uid(),name:String(f.get("name")).trim(),phone:String(f.get("phone")).trim(),notes:String(f.get("notes")).trim(),debt:0});
+    save();notify("تمت إضافة العميل.");renderCustomers();
+  });
+}
+
+function collectDebt(id){
+  const c=db.customers.find(x=>x.id===id);
+  if(!c||Number(c.debt)<=0){notify("لا يوجد رصيد مستحق لهذا العميل.");return;}
+  const value=Number(prompt("أدخل المبلغ الذي تم تحصيله",c.debt));
+  if(!Number.isFinite(value)||value<=0||value>Number(c.debt)){
+    notify("المبلغ غير صحيح.");return;
+  }
+  c.debt=Number(c.debt)-value;
+  db.payments.push({id:uid(),customerId:id,customer:c.name,amount:value,date:today()});
+  save();notify("تم تسجيل التحصيل.");renderCustomers();
+}
+
+/* الفواتير */
+
+function renderSales(){
+  const rows=[...db.sales].reverse().map(s=>`
+    <tr><td>#${esc(s.id.slice(-6))}</td><td>${esc(s.date)}</td><td>${esc(s.customer)}</td><td>${money(s.total)}</td><td>${money(s.paid)}</td><td><span class="badge ${s.paid>=s.total?"success":"pending"}">${s.paid>=s.total?"مدفوعة":"متبقي "+money(s.total-s.paid)}</span></td><td><button class="btn btn-secondary" onclick="printInvoice('${s.id}')">طباعة</button></td></tr>`).join("");
+
+  document.getElementById("mainContent").innerHTML=`
+  <div class="page-view">
+    ${pageHeader("الكاشير والفواتير","تسجيل عمليات البيع وإصدار الفواتير.")}
+    ${panel("إنشاء فاتورة جديدة",`
+      <form id="saleForm">
+        <div class="form-grid">
+          <div class="form-field"><label>العميل</label><select name="customerId"><option value="">عميل نقدي</option>${db.customers.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
+          <div class="form-field"><label>المنتج</label><select name="productId" required><option value="">اختر منتجًا</option>${db.products.filter(p=>p.qty>0).map(p=>`<option value="${p.id}">${esc(p.name)} — ${money(p.price)} (المتاح ${p.qty})</option>`).join("")}</select></div>
+          <div class="form-field"><label>الكمية</label><input name="qty" type="number" min="1" step="1" value="1" required></div>
+          <div class="form-field"><label>المبلغ المدفوع</label><input name="paid" type="number" min="0" step=".01" value="0" required></div>
+        </div>
+        <p class="muted small">نسخة الواجهة تسجل منتجًا واحدًا في الفاتورة. يمكن تطوير سلة متعددة المنتجات لاحقًا.</p>
+        <button class="btn btn-primary">＋ تسجيل الفاتورة</button>
+      </form>`)}
+    ${panel("سجل الفواتير",table(["رقم الفاتورة","التاريخ","العميل","الإجمالي","المدفوع","الحالة","إجراء"],rows))}
+  </div>`;
+
+  document.getElementById("saleForm").addEventListener("submit",e=>{
+    e.preventDefault();const f=new FormData(e.target);
+    const product=db.products.find(p=>p.id===f.get("productId"));
+    const qty=Number(f.get("qty"));
+    const paid=Number(f.get("paid"));
+    const customer=db.customers.find(c=>c.id===f.get("customerId"));
+
+    if(!product){notify("اختر منتجًا.");return;}
+    if(!Number.isInteger(qty)||qty<1||qty>product.qty){notify("الكمية المطلوبة غير متاحة.");return;}
+    const total=product.price*qty;
+    if(!Number.is
