@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>أجمل الهدايا | نظام الإدارة الذكي</title>
+<style>
+:root{
+ --bg:#f4f6fb;--card:#fff;--ink:#182238;--muted:#7c879b;
+ --primary:#6558e8;--primary2:#8877ff;--line:#e9edf5;
+ --green:#139a76;--red:#e45369;--gold:#e6a53a;
+ --shadow:0 12px 35px rgba(26,37,70,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;transition:.2s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.hidden{display:none!important}
+.app{display:flex;min-height:100vh}
+.sidebar{width:255px;background:#111827;color:#fff;padding:25px 16px;
+ display:flex;flex-direction:column;gap:25px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;padding:0 5px}
+.logo{width:47px;height:47px;border-radius:16px;
+ display:grid;place-items:center;font-size:24px;
+ background:linear-gradient(135deg,#a795ff,#5d4ce5);
+ box-shadow:0 7px 20px #6558e844}
+.brand h2{font-size:17px;margin:0 0 5px}
+.brand small{color:#aeb9d0;font-size:11px}
+.nav-label{font-size:10px;color:#78859e;padding:0 12px;margin-bottom:8px}
+.nav{display:grid;gap:7px}
+.nav button{display:flex;align-items:center;gap:12px;width:100%;
+ border:0;background:transparent;color:#aeb9ce;padding:13px 14px;
+ border-radius:12px;text-align:right;font-size:13px}
+.nav button:hover,.nav button.active{background:#6558e82b;color:white}
+.nav button.active{box-shadow:inset -3px 0 #998cff}
+.nicon{font-size:19px;width:25px;text-align:center}
+.sidebar-bottom{margin-top:auto;background:#202a3e;border:1px solid #344057;
+ padding:15px;border-radius:15px}
+.sidebar-bottom strong{font-size:12px}
+.sidebar-bottom p{font-size:11px;color:#aab5ca;line-height:1.8}
+.main{flex:1;min-width:0}
+.topbar{height:80px;background:#fff;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 30px;gap:15px;position:sticky;top:0;z-index:10}
+.top-title{font-size:20px;font-weight:bold}
+.top-sub{font-size:11px;color:var(--muted);margin-top:6px}
+.top-actions{display:flex;align-items:center;gap:12px}
+.avatar{width:41px;height:41px;border-radius:14px;
+ background:#ece9ff;color:var(--primary);display:grid;place-items:center;font-weight:bold}
+.status{font-size:11px;color:var(--green);background:#e6f8f1;
+ padding:8px 11px;border-radius:20px}
+.content{padding:28px;max-width:1500px;margin:auto}
+.page{display:none;animation:enter .3s ease}
+.page.active{display:block}
+@keyframes enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.welcome{background:linear-gradient(115deg,#25204c,#5d4cce 65%,#8877ff);
+ color:#fff;border-radius:23px;padding:29px;position:relative;overflow:hidden;
+ display:flex;justify-content:space-between;align-items:center;gap:20px;
+ box-shadow:0 15px 35px #6558e826;margin-bottom:23px}
+.welcome:after{content:"";position:absolute;width:220px;height:220px;
+ border:1px solid #ffffff30;border-radius:50%;left:20%;top:-140px;
+ box-shadow:0 0 0 25px #ffffff08,0 0 0 55px #ffffff08}
+.welcome h1{font-size:23px;margin:0 0 12px;position:relative;z-index:1}
+.welcome p{font-size:12px;line-height:2;color:#e1ddff;margin:0;
+ position:relative;z-index:1}
+.welcome-icon{font-size:57px;position:relative;z-index:1}
+.btn{border:0;border-radius:11px;padding:11px 15px;font-size:12px;font-weight:bold}
+.primary{background:var(--primary);color:white}
+.primary:hover{background:#5043d2}
+.secondary{background:#f0efff;color:var(--primary)}
+.danger{background:#fff0f2;color:var(--red)}
+.success{background:#e6f8f1;color:var(--green)}
+.darkbtn{background:#202a3e;color:white}
+.btn-sm{padding:7px 10px;font-size:11px}
+.section-head{display:flex;align-items:center;justify-content:space-between;
+ gap:12px;margin:28px 0 15px}
+.section-head h2{font-size:16px;margin:0}
+.section-head p{font-size:11px;color:var(--muted);margin:7px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.stat{background:var(--card);padding:20px;border-radius:18px;
+ border:1px solid #edf0f7;box-shadow:var(--shadow);min-width:0}
+.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stat-icon{width:43px;height:43px;display:grid;place-items:center;
+ border-radius:14px;font-size:21px;background:#efedff}
+.stat:nth-child(2) .stat-icon{background:#e3f8f0}
+.stat:nth-child(3) .stat-icon{background:#fff2df}
+.stat:nth-child(4) .stat-icon{background:#ffeaf0}
+.stat small{color:var(--muted);font-size:11px}
+.stat h3{font-size:23px;margin:19px 0 9px;overflow-wrap:anywhere}
+.stat-foot{font-size:10px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;
+ padding:20px;min-width:0}
+.panel h3{font-size:14px;margin:0 0 18px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:12px}
+th{text-align:right;color:var(--muted);font-weight:normal;background:#f8f9fc}
+td,th{padding:14px 12px;border-bottom:1px solid var(--line)}
+tbody tr:hover{background:#fafaff}
+.badge{padding:6px 9px;border-radius:20px;font-size:10px;display:inline-block}
+.badge.green{background:#e6f8f1;color:#128365}
+.badge.red{background:#fff0f2;color:#d6475e}
+.badge.orange{background:#fff5e3;color:#a66c11}
+.badge.purple{background:#f0edff;color:#6558e8}
+.search{border:1px solid var(--line);background:#fff;border-radius:11px;
+ padding:11px 13px;width:100%;outline:none;font-size:12px}
+.search:focus,.field:focus{border-color:#9b91ff;box-shadow:0 0 0 3px #6558e815}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:17px}
+.toolbar .search{max-width:300px}
+.field{width:100%;border:1px solid #e4e8f0;border-radius:10px;
+ padding:12px;background:#fff;outline:none;font-size:12px}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.formitem{display:grid;gap:8px}
+.formitem label{font-size:12px;color:#59657b}
+.formitem.full{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:12px}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.product-card{background:white;border:1px solid var(--line);
+ border-radius:16px;padding:17px;min-width:0}
+.product-symbol{height:90px;background:linear-gradient(135deg,#f3f1ff,#faf9ff);
+ border-radius:12px;display:grid;place-items:center;font-size:37px;margin-bottom:14px}
+.product-card h3{font-size:13px;margin:0 0 8px}
+.product-card p{font-size:11px;color:var(--muted)}
+.product-price{font-size:17px;color:var(--primary);font-weight:bold;margin:13px 0}
+.pos-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:18px}
+.cart-line{display:flex;justify-content:space-between;gap:10px;
+ padding:13px 0;border-bottom:1px solid var(--line);font-size:12px}
+.cart-total{background:#f7f6ff;padding:15px;border-radius:13px;margin-top:15px}
+.total-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px}
+.total-row.final{font-size:17px;font-weight:bold;color:var(--primary);border-top:1px solid #e2defe;margin-top:8px;padding-top:14px}
+.watermark{position:fixed;z-index:99;bottom:18px;left:18px;pointer-events:none;
+ display:flex;align-items:center;gap:8px;padding:10px 15px;border-radius:30px;
+ color:#fff;background:linear-gradient(110deg,#29204c,#6b55ed,#29204c);
+ background-size:200% 100%;box-shadow:0 7px 25px #29204c30;
+ animation:floatmark 4s ease-in-out infinite,shine 5s linear infinite;
+ font-size:11px;font-weight:bold;white-space:nowrap}
+.watermark span{font-size:16px;animation:spinmark 5s linear infinite}
+@keyframes floatmark{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes shine{to{background-position:-200% 0}}
+@keyframes spinmark{to{transform:rotate(360deg)}}
+.toast{position:fixed;top:95px;left:50%;transform:translateX(-50%);
+ background:#202a3e;color:white;padding:13px 20px;border-radius:12px;
+ z-index:200;font-size:12px;box-shadow:var(--shadow);max-width:90vw}
+.modal{position:fixed;inset:0;background:#10162999;z-index:150;
+ display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modal-box{background:#fff;width:min(560px,100%);max-height:90vh;
+ overflow:auto;border-radius:20px;padding:24px}
+.modal-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.modal-title h2{font-size:17px;margin:0}
+.close{border:0;background:#f2f3f8;border-radius:10px;padding:8px 12px}
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:20px;
+ background:radial-gradient(circle at top left,#ded8ff,transparent 40%),#f4f6fb}
+.auth-card{width:min(430px,100%);background:white;border:1px solid var(--line);
+ border-radius:24px;padding:30px;box-shadow:var(--shadow)}
+.auth-card .logo{margin:0 auto 15px}
+.auth-card h1{text-align:center;font-size:21px}
+.auth-card>p{text-align:center;font-size:12px;line-height:1.9;color:var(--muted)}
+.auth-card form{display:grid;gap:14px;margin-top:24px}
+.auth-card label{font-size:12px}
+.auth-note{font-size:11px;color:var(--muted);line-height:1.9;margin-top:16px}
+.footer{text-align:center;padding:25px;color:var(--muted);font-size:10px}
+@media(max-width:1050px){
+ .sidebar{width:215px}.content{padding:20px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+ .app{display:block;padding-bottom:70px}
+ .sidebar{position:fixed;z-index:30;bottom:0;right:0;left:0;width:100%;
+  height:65px;padding:5px 7px;background:#111827;display:block}
+ .brand,.nav-label,.sidebar-bottom{display:none}
+ .nav{height:100%;display:flex;justify-content:space-around;gap:2px}
+ .nav button{flex:1;min-width:0;height:54px;padding:4px 1px;
+  flex-direction:column;justify-content:center;gap:3px;
+  text-align:center;border-radius:9px;font-size:9px}
+ .nicon{font-size:19px;width:auto}
+ .topbar{height:70px;padding:0 15px}
+ .top-title{font-size:16px}.top-sub{font-size:10px}
+ .status{display:none}.avatar{width:36px;height:36px}
+ .content{padding:14px}
+ .welcome{padding:22px 18px;border-radius:18px}
+ .welcome h1{font-size:18px}.welcome p{font-size:11px}
+ .welcome-icon{font-size:40px}
+ .stats{gap:10px}.stat{padding:14px;border-radius:14px}
+ .stat h3{font-size:19px;margin:14px 0 8px}
+ .stat-icon{width:35px;height:35px;font-size:18px}
+ .grid2,.pos-layout{grid-template-columns:1fr}
+ .panel{padding:14px}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .product-card{padding:11px}
+ .product-symbol{height:70px}
+ .section-head h2{font-size:14px}
+ .watermark{bottom:78px;left:9px;font-size:10px;padding:8px 11px}
+ .formgrid{grid-template-columns:1fr}
+ .formitem.full{grid-column:auto}
+}
+@media(max-width:370px){
+ .stats{grid-template-columns:1fr 1fr}
+ .stat h3{font-size:17px}
+ .product-grid{grid-template-columns:1fr 1fr}
+ .welcome-icon{display:none}
+}
+@media print{
+ .sidebar,.topbar,.watermark,.no-print,.footer{display:none!important}
+ .app{display:block}.main{width:100%}.content{padding:0}
+ .page{display:none!important}.page.active{display:block!important}
+ body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div id="authScreen" class="auth-screen">
+ <div class="auth-card">
+  <div class="logo">🎁</div>
+  <h1>مكتبة أجمل الهدايا</h1>
+  <p>نظام الإدارة الذكي<br>سجّل دخولك للوصول إلى لوحة التحكم</p>
+  <form id="loginForm">
+   <div class="formitem"><label>اسم المستخدم</label>
+    <input class="field" id="loginName" required placeholder="اكتب اسم المستخدم">
+   </div>
+   <div class="formitem"><label>كلمة المرور</label>
+    <input class="field" id="loginPass" type="password" required placeholder="كلمة المرور">
+   </div>
+   <button class="btn primary" type="submit">دخول إلى النظام ←</button>
+  </form>
+  <div class="auth-note">
+   <b>أول استخدام:</b> اضغط «إنشاء حساب المالك» لإنشاء حسابك الأول.
+   <button class="btn secondary" style="width:100%;margin-top:12px" id="createOwner">
+    إنشاء حساب المالك الأول
+   </button>
+   <p>هذه النسخة التجريبية تحفظ البيانات في المتصفح الحالي فقط.</p>
+  </div>
+ </div>
+</div>
+
+<div id="app" class="app hidden">
+ <aside class="sidebar">
+  <div class="brand">
+   <div class="logo">🎁</div>
+   <div><h2>أجمل الهدايا</h2><small>SMART STORE SYSTEM</small></div>
+  </div>
+  <div>
+   <div class="nav-label">القائمة الرئيسية</div>
+   <nav class="nav" id="navigation">
+    <button class="active" data-page="dashboard"><span class="nicon">◫</span>الرئيسية</button>
+    <button data-page="pos"><span class="nicon">🛒</span>الكاشير</button>
+    <button data-page="products"><span class="nicon">▦</span>المنتجات</button>
+    <button data-page="invoices"><span class="nicon">▤</span>الفواتير</button>
+    <button data-page="customers"><span class="nicon">♙</span>العملاء</button>
+    <button data-page="debts"><span class="nicon">◷</span>الديون</button>
+    <button data-page="orders"><span class="nicon">📦</span>الطلبات</button>
+    <button data-page="reports"><span class="nicon">▥</span>التقارير</button>
+    <button data-page="settings"><span class="nicon">⚙</span>الإعدادات</button>
+   </nav>
+  </div>
+  <div class="sidebar-bottom">
+   <strong>✦ باشمهندس يوسف وصل</strong>
+   <p>إدارة أسهل، حسابات أوضح، وخدمة أفضل لعملائك.</p>
+  </div>
+ </aside>
+
+ <main class="main">
+  <header class="topbar">
+   <div><div class="top-title" id="pageTitle">لوحة التحكم</div>
+    <div class="top-sub" id="todayText"></div></div>
+   <div class="top-actions"><span class="status">● النظام جاهز</span>
+    <div class="avatar" id="avatar">ي</div>
+    <button class="btn secondary btn-sm" id="logout">خروج</button>
+   </div>
+  </header>
+
+  <div class="content">
+   <section class="page active" id="dashboard">
+    <div class="welcome">
+     <div><h1>أهلاً بيك في أجمل الهدايا 👋</h1>
+      <p>كل شغلك في مكان واحد.<br>تابع مبيعاتك ومخزونك وحسابات محلك بسهولة.</p>
+      <button class="btn" style="background:#fff;color:#5144cb;margin-top:17px"
+       onclick="go('pos')">＋ ابدأ عملية بيع</button>
+     </div><div class="welcome-icon">✦</div>
+    </div>
+    <div class="stats">
+     <div class="stat"><div class="stat-top"><small>إجمالي المبيعات</small><span class="stat-icon">💰</span></div>
+      <h3 id="statSales">0 ج.م</h3><div class="stat-foot">إجمالي قيمة الفواتير</div></div>
+     <div class="stat"><div class="stat-top"><small>المبالغ المحصلة</small><span class="stat-icon">✓</span></div>
+      <h3 id="statPaid">0 ج.م</h3><div class="stat-foot">المدفوع من العملاء</div></div>
+     <div class="stat"><div class="stat-top"><small>ديون العملاء</small><span class="stat-icon">◷</span></div>
+      <h3 id="statDebt">0 ج.م</h3><div class="stat-foot">إجمالي المبالغ المتبقية</div></div>
+     <div class="stat"><div class="stat-top"><small>المنتجات</small><span class="stat-icon">▦</span></div>
+      <h3 id="statProducts">0</h3><div class="stat-foot">عدد أصناف المخزون</div></div>
+    </div>
+    <div class="grid2">
+     <div class="panel" style="margin-top:20px">
+      <div class="section-head" style="margin-top:0"><h2>آخر الفواتير</h2>
+       <button class="btn secondary btn-sm" onclick="go('invoices')">عرض الكل</button></div>
+      <div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th></tr></thead>
+       <tbody id="recentInvoices"></tbody></table></div>
+     </div>
+     <div class="panel" style="margin-top:20px">
+      <h3>ملخص المخزون</h3>
+      <div id="stockSummary"></div>
+      <div style="margin-top:20px;padding:14px;background:#f5f3ff;border-radius:12px">
+       <small style="color:var(--primary)">نصيحة اليوم</small>
+       <p style="font-size:12px;line-height:1.9;margin-bottom:0">راجع الكميات المتبقية باستمرار، وسجّل كل عملية بيع لضمان دقة الحسابات.</p>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <section class="page" id="pos">
+    <div class="section-head" style="margin-top:0"><div><h2>الكاشير الذكي</h2>
+     <p>اختر المنتجات وسجّل البيع واطبع الفاتورة.</p></div></div>
+    <div class="pos-layout">
+     <div class="panel">
+      <input id="posSearch" class="search" placeholder="ابحث عن منتج بالاسم..." oninput="renderPOS()">
+      <div class="product-grid" id="posProducts" style="margin-top:15px"></div>
+     </div>
+     <div class="panel">
+      <h3>🛒 سلة المشتريات</h3>
+      <div id="cartItems"></div>
+      <div class="formitem" style="margin-top:15px"><label>العميل</label>
+       <select id="saleCustomer" class="field"></select></div>
+      <div class="formgrid" style="margin-top:13px">
+       <div class="formitem"><label>الخصم بالجنيه</label><input id="saleDiscount" type="number" min="0" value="0" class="field" oninput="renderCart()"></div>
+       <div class="formitem"><label>المبلغ المدفوع</label><input id="salePaid" type="number" min="0" value="0" class="field" oninput="renderCart()"></div>
+      </div>
+      <div class="formitem" style="margin-top:13px"><label>طريقة الدفع</label>
+       <select id="saleMethod" class="field"><option>نقدي</option><option>فيزا</option><option>تحويل</option><option>آجل</option></select></div>
+      <div class="cart-total">
+       <div class="total-row"><span>قبل الخصم</span><b id="cartSub">0 ج.م</b></div>
+       <div class="total-row"><span>الخصم</span><b id="cartDiscount">0 ج.م</b></div>
+       <div class="total-row final"><span>الإجمالي</span><span id="cartTotal">0 ج.م</span></div>
+       <div class="total-row"><span>المتبقي</span><b id="cartRemain">0 ج.م</b></div>
+      </div>
+      <button class="btn primary" style="width:100%;margin-top:14px" onclick="finishSale()">✓ إتمام البيع</button>
+      <button class="btn secondary" style="width:100%;margin-top:9px" onclick="clearCart()">إفراغ السلة</button>
+     </div>
+    </div>
+   </section>
+
+   <section class="page" id="products">
+    <div class="section-head" style="margin-top:0"><div><h2>إدارة المنتجات</h2><p>تحكم في الأصناف والأسعار والمخزون.</p></div>
+     <button class="btn primary" onclick="openProduct()">＋ إضافة منتج</button></div>
+    <div class="toolbar"><input class="search" id="productSearch" placeholder="ابحث عن منتج..." oninput="renderProducts()">
+     <select class="field" id="productFilter" style="width:auto" onchange="renderProducts()">
+      <option value="">كل المنتجات</option><option value="low">مخزون منخفض</option></select></div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr>
+     <th>المنتج</th><th>التصنيف</th><th>سعر البيع</th><th>التكلفة</th><th>المخزون</th><th>إجراءات</th>
+    </tr></thead><tbody id="productRows"></tbody></table></div></div>
+   </section>
+
+   <section class="page" id="invoices">
+    <div class="section-head" style="margin-top:0"><div><h2>الفواتير</h2><p>كل عمليات البيع المسجلة.</p></div>
+     <button class="btn secondary" onclick="window.print()">طباعة الصفحة</button></div>
+    <div class="toolbar"><input id="invoiceSearch" class="search" placeholder="ابحث برقم الفاتورة أو العميل..." oninput="renderInvoices()"></div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr>
+     <th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>إجراء</th>
+    </tr></thead><tbody id="invoiceRows"></tbody></table></div></div>
+   </section>
+
+   <section class="page" id="customers">
+    <div class="section-head" style="margin-top:0"><div><h2>العملاء</h2><p>بيانات العملاء وأرصدتهم.</p></div>
+     <button class="btn primary" onclick="openCustomer()">＋ إضافة عميل</button></div>
+    <div class="toolbar"><input id="customerSearch" class="search" placeholder="ابحث عن عميل..." oninput="renderCustomers()"></div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr>
+     <th>الاسم</th><th>الهاتف</th><th>الرصيد المستحق</th><th>ملاحظات</th><th>إجراءات</th>
+    </tr></thead><tbody id="customerRows"></tbody></table></div></div>
+   </section>
+
+   <section class="page" id="debts">
+    <div class="section-head" style="margin-top:0"><div><h2>الديون والتحصيل</h2><p>متابعة المبالغ المتبقية وتسجيل الدفعات.</p></div></div>
+    <div class="stats" style="margin-bottom:20px">
+     <div class="stat"><small>إجمالي الديون</small><h3 id="debtTotal">0 ج.م</h3></div>
+     <div class="stat"><small>عدد العملاء المدينين</small><h3 id="debtCount">0</h3></div>
+    </div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr>
+     <th>العميل</th><th>رقم الفاتورة</th><th>الإجمالي</th><th>المتبقي</th><th>تحصيل</th>
+    </tr></thead><tbody id="debtRows"></tbody></table></div></div>
+   </section>
+
+   <section class="page" id="orders">
+    <div class="section-head" style="margin-top:0"><div><h2>إدارة الطلبات</h2><p>سجّل طلبات العملاء وتابع حالتها.</p></div>
+     <button class="btn primary" onclick="openOrder()">＋ طلب جديد</button></div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr>
+     <th>رقم الطلب</th><th>العميل</th><th>التفاصيل</th><th>السعر</th><th>الحالة</th><th>إجراء</th>
+    </tr></thead><tbody id="orderRows"></tbody></table></div></div>
+   </section>
+
+   <section class="page" id="reports">
+    <div class="section-head" style="margin-top:0"><div><h2>التقارير المالية</h2><p>ملخص حركة البيع والتحصيل.</p></div>
+     <button class="btn secondary" onclick="window.print()">طباعة التقرير</button></div>
+    <div class="stats">
+     <div class="stat"><small>إجمالي الفواتير</small><h3 id="repSales">0</h3></div>
+     <div class="stat"><small>إجمالي التحصيل</small><h3 id="repPaid">0</h3></div>
+     <div class="stat"><small>المبالغ المتبقية</small><h3 id="repDebt">0</h3></div>
+     <div class="stat"><small>عدد عمليات البيع</small><h3 id="repCount">0</h3></div>
+    </div>
+    <div class="panel" style="margin-top:20px"><h3>تفاصيل الفواتير</h3>
+     <div class="table-wrap"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th></tr></thead>
+      <tbody id="reportRows"></tbody></table></div>
+    </div>
+   </section>
+
+   <section class="page" id="settings">
+    <div class="section-head" style="margin-top:0"><div><h2>إعدادات المكتبة</h2><p>تخصيص بيانات المحل.</p></div></div>
+    <div class="panel">
+     <form id="settingsForm" class="formgrid">
+      <div class="formitem"><label>اسم المكتبة</label><input class="field" id="setName" value="مكتبة أجمل الهدايا" required></div>
+      <div class="formitem"><label>رقم الهاتف</label><input class="field" id="setPhone" placeholder="رقم المحل"></div>
+      <div class="formitem"><label>العنوان</label><input class="field" id="setAddress" placeholder="عنوان المكتبة"></div>
+      <div class="formitem"><label>اسم المسؤول</label><input class="field" id="setOwner" value="باشمهندس يوسف"></div>
+      <div class="formitem full"><button class="btn primary" type="submit">حفظ الإعدادات</button></div>
+     </form>
+     <hr style="border:0;border-top:1px solid var(--line);margin:25px 0">
+     <h3>النسخ الاحتياطي</h3>
+     <p style="font-size:12px;line-height:2;color:var(--muted)">نزّل نسخة من بياناتك للاحتفاظ بها. النسخة الحالية مرتبطة بالمتصفح والجهاز المستخدم.</p>
+     <button class="btn secondary" onclick="backupData()">تنزيل نسخة احتياطية</button>
+     <button class="btn secondary" onclick="document.getElementById('restoreFile').click()">استعادة نسخة</button>
+     <input type="file" id="restoreFile" accept=".json" hidden onchange="restoreData(event)">
+    </div>
+   </section>
+   <div class="footer">أجمل الهدايا © <span id="year"></span> — نظام الإدارة الذكي</div>
+  </div>
+ </main>
+</div>
+
+<div class="watermark"><span>✦</span> باشمهندس يوسف وصل <span>✦</span></div>
+<div class="toast hidden" id="toast"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+ <div class="modal-box"><div class="modal-title"><h2 id="modalTitle"></h2>
+  <button class="close" onclick="closeModal()">✕</button></div>
+  <div id="modalContent"></div></div>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const KEY="agmal_hdaya_pro_v1";
+const money=n=>(Number(n)||0).toLocaleString("ar-EG",{maximumFractionDigits:2})+" ج.م";
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dateText=d=>new Date(d).toLocaleDateString("ar-EG");
+const now=()=>new Date().toISOString();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+let db={products:[],customers:[],sales:[],orders:[],settings:{name:"مكتبة أجمل الهدايا",phone:"",address:"",owner:"باشمهندس يوسف"},users:[]};
+let cart=[],editingProduct=null,editingCustomer=null,currentUser=null;
+
+function persist(){
+ try{localStorage.setItem(KEY,JSON.stringify(db));return true}
+ catch(e){notify("تعذر الحفظ. قد تكون مساحة التخزين ممتلئة.");return false}
+}
+function load(){
+ try{
+  const saved=localStorage.getItem(KEY);
+  if(saved){const d=JSON.parse(saved);if(d&&typeof d==="object")db={...db,...d}}
+ }catch(e){notify("تعذر قراءة البيانات المحفوظة")}
+}
+function notify(message){
+ const t=$("toast");if(!t)return;
+ t.textContent=message;t.classList.remove("hidden");
+ clearTimeout(notify.timer);notify.timer=setTimeout(()=>t.classList.add("hidden"),2800);
+}
+function openModal(title,html){
+ $("modalTitle").textContent=title;$("modalContent").innerHTML=html;$("modal").classList.add("show");
+}
+function closeModal(){$("modal").classList.remove("show")}
+function emptyRow(cols,msg="لا توجد بيانات حتى الآن"){
+ return `<tr><td colspan="${cols}" class="empty">${safe(msg)}</td></tr>`;
+}
+function getCustomer(id){return db.customers.find(c=>c.id===id)}
+function customerName(id){return getCustomer(id)?.name||"عميل نقدي"}
+function balanceFor(id){
+ return db.sales.filter(s=>s.customerId===id).reduce((a,s)=>a+Number(s.remaining||0),0);
+}
+function isOwner(){return currentUser?.role==="owner"}
+
+$("createOwner").addEventListener("click",()=>{
+ if(db.users.some(u=>u.role==="owner")){
+  notify("حساب المالك موجود بالفعل. سجّل الدخول.");return;
+ }
+ openModal("إنشاء حساب المالك الأول",`
+ <form id="ownerForm" class="formgrid">
+  <div class="formitem full"><label>اسم المسؤول</label><input class="field" name="name" required value="باشمهندس يوسف"></div>
+  <div class="formitem full"><label>اسم المستخدم</label><input class="field" name="username" required minlength="3"></div>
+  <div class="formitem full"><label>كلمة المرور (8 أحرف على الأقل)</label><input class="field" type="password" name="password" required minlength="8"></div>
+  <div class="formitem full"><button class="btn primary">إنشاء الحساب</button></div>
+ </form>`);
+ $("ownerForm").onsubmit=e=>{
+  e.preventDefault();const f=new FormData(e.target);
+  if(db.users.some(u=>u.username===f.get("username"))){notify("اسم المستخدم مستخدم بالفعل");return}
+  db.users.push({id:uid(),name:f.get("name"),username:f.get("username"),password:f.get("password"),role:"owner",approved:true});
+  persist();closeModal();notify("تم إنشاء الحساب. يمكنك تسجيل الدخول.");
+ };
+});
+$("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const username=$("loginName").value.trim(),password=$("loginPass").value;
+ const u=db.users.find(x=>x.username===username&&x.password===password&&x.approved);
+ if(!u){notify("بيانات الدخول غير صحيحة أو لا يوجد حساب. أنشئ حساب المالك أولاً.");return}
+ currentUser=u;sessionStorage.setItem("agmal_session",u.id);showApp();
+});
+function showApp(){
+ $("authScreen").classList.add("hidden");$("app").classList.remove("hidden");
+ $("avatar").textContent=(currentUser?.name||"ي").slice(0,1);
+ $("todayText").textContent=new Date().toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+ $("year").textContent=new Date().getFullYear();refreshAll();go("dashboard");
+}
+$("logout").onclick=()=>{currentUser=null;sessionStorage.removeItem("agmal_session");cart=[];$("app").classList.add("hidden");$("authScreen").classList.remove("hidden")};
+
+function go(id){
+ if(!$(id))return;
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ const names={dashboard:"لوحة التحكم",pos:"الكاشير الذكي",products:"المنتجات",invoices:"الفواتير",customers:"العملاء",debts:"الديون والتحصيل",orders:"الطلبات",reports:"التقارير المالية",settings:"الإعدادات"};
+ $("pageTitle").textContent=names[id]||"أجمل الهدايا";
+ if(id==="dashboard")renderDashboard();
+ if(id==="pos"){renderPOS();renderCart();fillCustomerSelect()}
+ if(id==="products")renderProducts();
+ if(id==="invoices")renderInvoices();
+ if(id==="customers")renderCustomers();
+ if(id==="debts")renderDebts();
+ if(id==="orders")renderOrders();
+ if(id==="reports")renderReports();
+ if(id==="settings")loadSettings();
+}
+$("navigation").addEventListener("click",e=>{
+ const b=e.target.closest("[data-page]");if(b)go(b.dataset.page);
+});
+function refreshAll(){
+ renderDashboard();renderProducts();renderInvoices();renderCustomers();renderDebts();
+ renderOrders();renderReports();renderPOS();renderCart();fillCustomerSelect();
+}
+function renderDashboard(){
+ const sales=db.sales;
+ const total=sales.reduce((a,s)=>a+s.total,0);
+ const paid=sales.reduce((a,s)=>a+s.paid,0);
+ const debt=sales.reduce((a,s)=>a+s.remaining,0);
+ $("statSales").textContent=money(total);$("statPaid").textContent=money(paid);
+ $("statDebt").textContent=money(debt);$("statProducts").textContent=db.products.length;
+ $("recentInvoices").innerHTML=sales.slice().reverse().slice(0,6).map(s=>`
+ <tr><td>${safe(s.invoiceNo)}</td><td>${safe(customerName(s.customerId))}</td>
+ <td>${money(s.total)}</td><td><span class="badge ${s.remaining?"orange":"green"}">${s.remaining?"متبقي":"مدفوعة"}</span></td></tr>
+ `).join("")||emptyRow(4,"لا توجد فواتير مسجلة");
+ const low=db.products.filter(p=>p.stock<=5);
+ $("stockSummary").innerHTML=`
+ <div class="total-row"><span>عدد الأصناف</span><b>${db.products.length}</b></div>
+ <div class="total-row"><span>إجمالي الوحدات</span><b>${db.products.reduce((a,p)=>a+p.stock,0)}</b></div>
+ <div class="total-row"><span>أصناف مخزون منخفض</span><b style="color:${low.length?"var(--red)":"var(--green)"}">${low.length}</b></div>
+ ${low.slice(0,4).map(p=>`<div class="total-row"><span>${safe(p.name)}</span><span class="badge red">${p.stock} متبقي</span></div>`).join("")}
+ `;
+}
+function renderProducts(){
+ if(!$("productRows"))return;
+ const q=($("productSearch")?.value||"").trim().toLowerCase();
+ const low=$("productFilter")?.value==="low";
+ const list=db.products.filter(p=>(p.name+" "+p.category).toLowerCase().includes(q)&&(!low||p.stock<=5));
+ $("productRows").innerHTML=list.map(p=>`<tr>
+ <td><b>${safe(p.name)}</b></td><td>${safe(p.category||"-")}</td>
+ <td>${money(p.price)}</td><td>${money(p.cost)}</td>
+ <td><span class="badge ${p.stock<=5?"red":"green"}">${p.stock}</span></td>
+ <td><button class="btn secondary btn-sm" onclick="openProduct('${p.id}')">تعديل</button>
+ <button class="btn danger btn-sm" onclick="deleteProduct('${p.id}')">حذف</button></td>
+ </tr>`).join("")||emptyRow(6,"لا توجد منتجات مطابقة");
+}
+function openProduct(id=""){
+ editingProduct=id||null;const p=db.products.find(x=>x.id===id)||{name:"",category:"",price:"",cost:"",stock:""};
+ openModal(id?"تعديل المنتج":"إضافة منتج جديد",`
+ <form id="productForm" class="formgrid">
+  <div class="formitem full"><label>اسم المنتج</label><input class="field" name="name" required value="${safe(p.name)}"></div>
+  <div class="formitem"><label>التصنيف</label><input class="field" name="category" value="${safe(p.category)}"></div>
+  <div class="formitem"><label>سعر البيع</label><input class="field" name="price" type="number" min="0" step=".01" required value="${p.price}"></div>
+  <div class="formitem"><label>سعر التكلفة</label><input class="field" name="cost" type="number" min="0" step=".01" value="${p.cost}"></div>
+  <div class="formitem"><label>الكمية بالمخزن</label><input class="field" name="stock" type="number" min="0" step="1" required value="${p.stock}"></div>
+  <div class="formitem full"><button class="btn primary">حفظ المنتج</button></div>
+ </form>`);
+ $("productForm").onsubmit=e=>{
+  e.preventDefault();const f=new FormData(e.target);
+  const v={name:f.get("name").trim(),category:f.get("category").trim(),price:Number(f.get("price")),cost:Number(f.get("cost"))||0,stock:Number(f.get("stock"))};
+  if(!v.name||v.price<0||v.stock<0||v.cost<0)return notify("راجع البيانات المدخلة");
+  if(id){Object.assign(db.products.find(x=>x.id===id),v)}
+  else db.products.push({id:uid(),...v});
+  persist();closeModal();refreshAll();notify("تم حفظ المنتج");
+ };
+}
+function deleteProduct(id){
+ const p=db.products.find(x=>x.id===id);if(!p)return;
+ if(!confirm("هل تريد حذف المنتج: "+p.name+"؟"))return;
+ if(cart.some(x=>x.id===id))cart=cart.filter(x=>x.id!==id);
+ db.products=db.products.filter(x=>x.id!==id);persist();refreshAll();notify("تم حذف المنتج");
+}
+function renderPOS(){
+ if(!$("posProducts"))return;
+ const q=($("posSearch")?.value||"").toLowerCase();
+ $("posProducts").innerHTML=db.products.filter(p=>(p.name+" "+p.category).toLowerCase().includes(q)).map(p=>`
+ <div class="product-card"><div class="product-symbol">📦</div>
+ <h3>${safe(p.name)}</h3><p>${safe(p.category||"بدون تصنيف")}</p>
+ <div class="product-price">${money(p.price)}</div>
+ <p>المتاح: ${p.stock}</p>
+ <button class="btn primary" style="width:100%" ${p.stock<1?"disabled":""} onclick="addToCart('${p.id}')">＋ إضافة</button>
+ </div>`).join("")||`<div class="empty">أضف منتجات من قسم المنتجات أولاً.</div>`;
+}
+function addToCart(id){
+ const p=db.products.find(x=>x.id===id);if(!p||p.stock<1)return notify("المنتج غير متوفر");
+ const x=cart.find(x=>x.id===id);
+ if(x){if(x.qty>=p.stock)return notify("الكمية غير متاحة");x.qty++}
+ else cart.push({id,qty:1});
+ renderCart();
+}
+function changeQty(id,d){
+ const x=cart.find(x=>x.id===id),p=db.products.find(x=>x.id===id);if(!x||!p)return;
+ x.qty+=d;if(x.qty<=0)cart=cart.filter(a=>a.id!==id);
+ if(x&&x.qty>p.stock)x.qty=p.stock;
+ renderCart();
+}
+function cartSub(){return cart.reduce((a,x)=>a+(db.products.find(p=>p.id===x.id)?.price||0)*x.qty,0)}
+function renderCart(){
+ if(!$("cartItems"))return;
+ $("cartItems").innerHTML=cart.map(x=>{
+  const p=db.products.find(p=>p.id===x.id);if(!p)return "";
+  return `<div class="cart-line"><div><b>${safe(p.name)}</b><div style="margin-top:8px">
+  <button class="btn secondary btn-sm" onclick="changeQty('${x.id}',-1)">−</button>
+  <span style="padding:0 8px">${x.qty}</span>
+  <button class="btn secondary btn-sm" onclick="changeQty('${x.id}',1)">+</button></div></div>
+  <div style="text-align:left"><b>${money(p.price*x.qty)}</b>
+  <button class="btn danger btn-sm" style="display:block;margin-top:7px" onclick="changeQty('${x.id}',-${x.qty})">حذف</button></div></div>`;
+ }).join("")||`<div class="empty">السلة فارغة، أضف المنتجات للبدء.</div>`;
+ const sub=cartSub(),discount=Math.min(sub,Math.max(0,Number($("saleDiscount").value)||0)),total=sub-discount;
+ const paid=Math.min(total,Math.max(0,Number($("salePaid").value)||0));
+ $("cartSub").textContent=money(sub);$("cartDiscount").textContent=money(discount);
+ $("cartTotal").textContent=money(total);$("cartRemain").textContent=money(total-paid);
+}
+function clearCart(){cart=[];$("saleDiscount").value=0;$("salePaid").value=0;renderCart()}
+function fillCustomerSelect(){
+ if(!$("saleCustomer"))return;
+ const old=$("saleCustomer").value;
+ $("saleCustomer").innerHTML='<option value="">عميل نقدي</option>'+db.customers.map(c=>`<option value="${c.id}">${safe(c.name)}</option>`).join("");
+ if(db.customers.some(c=>c.id===old))$("saleCustomer").value=old;
+}
+function finishSale(){
+ if(!cart.length)return notify("أضف منتجاً أولاً");
+ const sub=cartSub(),discount=Math.min(sub,Math.max(0,Number($("saleDiscount").value)||0));
+ const total=sub-discount,method=$("saleMethod").value,cid=$("saleCustomer").value;
+ let paid=Math.min(total,Math.max(0,Number($("salePaid").value)||0));
+ if(method!=="آجل"&&paid===0)paid=total;
+ if(method==="آجل"&&paid===0&&total===0)return notify("قيمة الفاتورة غير صحيحة");
+ const remain=total-paid;
+ if(remain>0&&!cid)return notify("اختر العميل لتسجيل المبلغ المتبقي");
+ for(const x of cart){const p=db.products.find(p=>p.id===x.id);if(!p||p.stock<x.qty)return notify("المخزون تغير، راجع الكميات")}
+ const sale={id:uid(),invoiceNo:"INV-"+String(db.sales.length+1).padStart(5,"0"),
+ date:now(),customerId:cid,items:cart.map(x=>({...x})),subtotal:sub,discount,total,paid,remaining:remain,method};
+ cart.forEach(x=>{db.products.find(p=>p.id===x.id).stock-=x.qty});
+ db.sales.push(sale);persist();clearCart();refreshAll();notify("تم تسجيل الفاتورة بنجاح");
+ printInvoice(sale.id);
+}
+function renderInvoices(){
+ if(!$("invoiceRows"))return;
+ const q=($("invoiceSearch")?.value||"").toLowerCase();
+ const list=db.sales.slice().reverse().filter(s=>(s.invoiceNo+" "+customerName(s.customerId)).toLowerCase().includes(q));
+ $("invoiceRows").innerHTML=list.map(s=>`<tr>
+ <td><b>${safe(s.invoiceNo)}</b></td><td>${dateText(s.date)}</td><td>${safe(customerName(s.customerId))}</td>
+ <td>${money(s.total)}</td><td>${money(s.paid)}</td><td>${money(s.remaining)}</td>
+ <td><button class="btn secondary btn-sm" onclick="printInvoice('${s.id}')">طباعة</button></td></tr>`).join("")||emptyRow(7);
+}
+function printInvoice(id){
+ const s=db.sales.find(x=>x.id===id);if(!s)return;
+ const items=(s.items||[]).map(x=>{const p=db.products.find(p=>p.id===x.id);
+ const name=p?.name||x.name||"منتج";const price=p?.price??x.price??0;
+ return `<tr><td>${safe(name)}</td><td>${x.qty}</td><td>${money(price)}</td><td>${money(price*x.qty)}</td></tr>`}).join("");
+ const w=window.open("","_blank","width=800,height=700");
+ if(!w)return notify("اسمح بفتح النوافذ المنبثقة لطباعة الفاتورة");
+ w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>فاتورة ${safe(s.invoiceNo)}</title>
+ <style>body{font-family:Tahoma,Arial;padding:25px;color:#222}h1{text-align:center;font-size:23px}
+ p{line-height:1.8}table{width:100%;border-collapse:collapse;margin-top:25px}
+ th,td{border:1px solid #ddd;padding:12px;text-align:right}th{background:#f4f3fb}
+ .total{text-align:left;margin-top:20px;line-height:2}.foot{text-align:center;margin-top:50px;color:#666}
+ @media print{button{display:none}}</style></head><body>
+ <h1>${safe(db.settings.name)}</h1><p>الهاتف: ${safe(db.settings.phone||"—")}<br>العنوان: ${safe(db.settings.address||"—")}</p>
+ <hr><h2>فاتورة بيع</h2><p>رقم الفاتورة: ${safe(s.invoiceNo)}<br>التاريخ: ${dateText(s.date)}<br>العميل: ${safe(customerName(s.customerId))}</p>
+ <table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${items}</tbody></table>
+ <div class="total"><div>المجموع: ${money(s.subtotal)}</div><div>الخصم: ${money(s.discount)}</div>
+ <div><b>الإجمالي: ${money(s.total)}</b></div><div>المدفوع: ${money(s.paid)}</div><div>المتبقي: ${money(s.remaining)}</div></div>
+ <div class="foot">شكراً لزيارتكم — باشمهندس يوسف وصل</div>
+ <script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.close();
+}
+function renderCustomers(){
+ if(!$("customerRows"))return;
+ const q=($("customerSearch")?.value||"").toLowerCase();
+ const list=db.customers.filter(c=>(c.name+" "+c.phone).toLowerCase().includes(q));
+ $("customerRows").innerHTML=list.map(c=>`<tr><td><b>${safe(c.name)}</b></td><td>${safe(c.phone||"-")}</td>
+ <td>${money(balanceFor(c.id))}</td><td>${safe(c.notes||"-")}</td>
+ <td><button class="btn secondary btn-sm" onclick="openCustomer('${c.id}')">تعديل</button>
+ <button class="btn danger btn-sm" onclick="deleteCustomer('${c.id}')">حذف</button></td></tr>`).join("")||emptyRow(5);
+}
+function openCustomer(id=""){
+ const c=db.customers.find(x=>x.id===id)||{name:"",phone:"",notes:""};editingCustomer=id||null;
+ openModal(id?"تعديل بيانات العميل":"إضافة عميل",`
+ <form id="customerForm" class="formgrid">
+ <div class="formitem full"><label>اسم العميل</label><input class="field" name="name" required value="${safe(c.name)}"></div>
+ <div class="formitem full"><label>رقم الهاتف</label><input class="field" name="phone" value="${safe(c.phone)}"></div>
+ <div class="formitem full"><label>ملاحظات</label><textarea class="field" name="notes">${safe(c.notes)}</textarea></div>
+ <div class="formitem full"><button class="btn primary">حفظ العميل</button></div></form>`);
+ $("customerForm").onsubmit=e=>{
+  e.preventDefault();const f=new FormData(e.target),v={name:f.get("name").trim(),phone:f.get("phone").trim(),notes:f.get("notes").trim()};
+  if(!v.name)return notify("اكتب اسم العميل");
+  if(id)Object.assign(db.customers.find(x=>x.id===id),v);else db.customers.push({id:uid(),...v});
+  persist();closeModal();refreshAll();notify("تم حفظ بيانات العميل");
+ };
+}
+function deleteCustomer(id){
+ if(balanceFor(id)>0)return notify("لا يمكن حذف عميل لديه ديون مستحقة");
+ if(db.sales.some(s=>s.customerId===id))return notify("العميل مرتبط بفواتير سابقة؛ احتفظ بسجله");
+ if(!confirm("حذف العميل؟"))return;
+ db.customers=db.customers.filter(c=>c.id!==id);persist();refreshAll();
+}
+function renderDebts(){
+ const list=db.sales.filter(s=>s.remaining>0);
+ $("debtTotal").textContent=money(list.reduce((a,s)=>a+s.remaining,0));
+ $("debtCount").textContent=new Set(list.map(s=>s.customerId).filter(Boolean)).size;
+ $("debtRows").innerHTML=list.map(s=>`<tr><td>${safe(customerName(s.customerId))}</td>
+ <td>${safe(s.invoiceNo)}</td><td>${money(s.total)}</td><td>${money(s.remaining)}</td>
+ <td><button class="btn success btn-sm" onclick="collectPayment('${s.id}')">تحصيل</button></td></tr>`).join("")||emptyRow(5,"لا توجد ديون مستحقة");
+}
+function collectPayment(id){
+ const s=db.sales.find(x=>x.id===id);if(!s||s.remaining<=0)return;
+ openModal("تسجيل دفعة — "+s.invoiceNo,`
+ <p style="font-size:12px;line-height:2">العميل: ${safe(customerName(s.customerId))}<br>المبلغ المتبقي: <b>${money(s.remaining)}</b></p>
+ <form id="paymentForm"><div class="formitem"><label>المبلغ المحصل</label>
+ <input class="field" name="amount" type="number" min=".01" max="${s.remaining}" step=".01" required></div>
+ <div class="formitem" style="margin-top:12px"><label>طريقة الدفع</label><select class="field" name="method"><option>نقدي</option><option>فيزا</option><option>تحويل</option></select></div>
+ <button class="btn primary" style="margin-top:16px">تأكيد التحصيل</button></form>`);
+ $("paymentForm").onsubmit=e=>{
+  e.preventDefault();const f=new FormData(e.target),amount=Number(f.get("amount"));
+  if(!(amount>0)||amount>s.remaining)return notify("قيمة الدفعة غير صحيحة");
+  s.paid+=amount;s.remaining=Math.max(0,s.total-s.paid);
+  s.payments=s.payments||[];s.payments.push({amount,method:f.get("method"),date:now()});
+  persist();closeModal();refreshAll();notify("تم تسجيل الدفعة");
+ };
+}
+function renderOrders(){
+ $("orderRows").innerHTML=db.orders.slice().reverse().map(o=>`<tr><td>${safe(o.orderNo)}</td>
+ <td>${safe(o.customer)}</td><td>${safe(o.details)}</td><td>${money(o.price)}</td>
+ <td><span class="badge ${o.status==="مكتمل"?"green":o.status==="ملغي"?"red":"orange"}">${safe(o.status)}</span></td>
+ <td><select class="field" style="width:auto" onchange="updateOrder('${o.id}',this.value)">
+ ${["جديد","قيد التنفيذ","جاهز للاستلام","مكتمل","ملغي"].map(x=>`<option ${o.status===x?"selected":""}>${x}</option>`).join("")}
+ </select></td></tr>`).join("")||emptyRow(6,"لا توجد طلبات");
+}
+function openOrder(){
+ openModal("إضافة طلب جديد",`
+ <form id="orderForm" class="formgrid">
+ <div class="formitem"><label>اسم العميل</label><input class="field" name="customer" required></div>
+ <div class="formitem"><label>السعر المتوقع</label><input class="field" name="price" type="number" min="0" required></div>
+ <div class="formitem full"><label>تفاصيل الطلب</label><textarea class="field" name="details" required placeholder="مثال: طباعة ملازم أو تجهيز هدايا"></textarea></div>
+ <div class="formitem full"><button class="btn primary">حفظ الطلب</button></div></form>`);
+ $("orderForm").onsubmit=e=>{
+  e.preventDefault();const f=new FormData(e.target);
+  db.orders.push({id:uid(),orderNo:"ORD-"+String(db.orders.length+1).padStart(4,"0"),
+   customer:f.get("customer").trim(),price:Number(f.get("price")),details:f.get("details").trim(),status:"جديد",date:now()});
+  persist();closeModal();renderOrders();notify("تم تسجيل الطلب");
+ };
+}
+function updateOrder(id,status){
+ const o=db.orders.find(x=>x.id===id);if(!o)return;o.status=status;persist();renderOrders();notify("تم تحديث حالة الطلب");
+}
+function renderReports(){
+ const s=db.sales;
+ $("repSales").textContent=money(s.reduce((a,x)=>a+x.total,0));
+ $("repPaid").textContent=money(s.reduce((a,x)=>a+x.paid,0));
+ $("repDebt").textContent=money(s.reduce((a,x)=>a+x.remaining,0));
+ $("repCount").textContent=s.length;
+ $("reportRows").innerHTML=s.slice().reverse().map(x=>`<tr><td>${safe(x.invoiceNo)}</td>
+ <td>${dateText(x.date)}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(x.remaining)}</td></tr>`).join("")||emptyRow(5);
+}
+function loadSettings(){
+ $("setName").value=db.settings.name||"مكتبة أجمل الهدايا";
+ $("setPhone").value=db.settings.phone||"";
+ $("setAddress").value=db.settings.address||"";
+ $("setOwner").value=db.settings.owner||"باشمهندس يوسف";
+}
+$("settingsForm").onsubmit=e=>{
+ e.preventDefault();
+ db.settings={name:$("setName").value.trim(),phone:$("setPhone").value.trim(),
+ address:$("setAddress").value.trim(),owner:$("setOwner").value.trim()};
+ persist();notify("تم حفظ الإعدادات");
+};
+function backupData(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="agmal-el-hdaya-backup.json";a.click();URL.revokeObjectURL(url);
+ notify("تم تجهيز النسخة الاحتياطية");
+}
+function restoreData(e){
+ const file=e.target.files?.[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const d=JSON.parse(reader.result);
+   if(!d||!Array.isArray(d.products)||!Array.isArray(d.users)||!Array.isArray(d.sales))throw Error();
+   if(!confirm("سيتم استبدال البيانات الحالية بالنسخة المختارة. هل تريد المتابعة؟"))return;
+   db={...db,...d};persist();refreshAll();notify("تمت استعادة البيانات");
+  }catch(err){notify("ملف النسخة الاحتياطية غير صالح")}
+  e.target.value="";
+ };
+ reader.readAsText(file);
+}
+load();
+if(!db.products.length&&!localStorage.getItem(KEY)){
+ db.products=[
+  {id:uid(),name:"كشكول سلك",category:"أدوات مدرسية",price:45,cost:30,stock:25},
+  {id:uid(),name:"قلم جاف أزرق",category:"أقلام",price:8,cost:4,stock:80},
+  {id:uid(),name:"مقلمة",category:"مستلزمات",price:65,cost:40,stock:12},
+  {id:uid(),name:"هدية صغيرة",category:"هدايا",price:120,cost:75,stock:8}
+ ];
+ persist();
+}
+const session=sessionStorage.getItem("agmal_session");
+if(session){
+ const u=db.users.find(x=>x.id===session);
+ if(u&&u.approved){currentUser=u;showApp()}
+}
+</script>
+</body>
+</html>
