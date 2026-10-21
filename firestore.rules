@@ -1,0 +1,76 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function isOwner() {
+      return signedIn()
+        && exists(userPath(request.auth.uid))
+        && get(userPath(request.auth.uid)).data.role == "owner"
+        && get(userPath(request.auth.uid)).data.active == true;
+    }
+
+    // ملفات الحسابات والموافقات
+    match /users/{uid} {
+
+      // المستخدم يرى ملفه فقط، والمالك يستطيع مراجعة الحسابات.
+      allow get: if signedIn()
+        && (request.auth.uid == uid || isOwner());
+
+      allow list: if isOwner();
+
+      // التسجيل الذاتي ينشئ حسابًا معلقًا فقط.
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly([
+          "displayName",
+          "email",
+          "role",
+          "active",
+          "status",
+          "createdAt"
+        ])
+        && request.resource.data.role == "pending"
+        && request.resource.data.active == false
+        && request.resource.data.status == "pending";
+
+      // المالك وحده يعتمد الحسابات ويحدد أدوارها.
+      allow update: if isOwner()
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly([
+            "role",
+            "active",
+            "status"
+          ])
+        && request.resource.data.role in [
+          "owner",
+          "employee",
+          "cashier",
+          "customer",
+          "pending",
+          "rejected"
+        ];
+
+      allow delete: if false;
+    }
+
+    // بيانات الإدارة الداخلية للمالك المعتمد فقط.
+    match /app/{document=**} {
+      allow read, write: if isOwner();
+    }
+
+    // منع الوصول إلى أي مسارات غير معرّفة.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
