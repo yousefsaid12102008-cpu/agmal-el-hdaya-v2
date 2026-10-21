@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09111f">
+  <title>لوحة الإدارة | أجمل الهدايا</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <div>
+        <h1>أجمل الهدايا</h1>
+        <p>لوحة إدارة المكتبة</p>
+      </div>
+      <div>
+        <strong id="welcome">جارٍ التحقق من الحساب...</strong>
+        <button class="btn btn-secondary" id="logoutBtn" type="button">
+          تسجيل الخروج
+        </button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <article class="stat-card">
+        <div class="label">حالة النظام</div>
+        <div class="value" style="font-size:20px">متصل بالواجهة</div>
+      </article>
+      <article class="stat-card">
+        <div class="label">إدارة الحسابات</div>
+        <div class="value" style="font-size:20px">موافقة المالك</div>
+      </article>
+    </section>
+
+    <section class="panel" style="margin-top:20px">
+      <h2>طلبات الحسابات الجديدة</h2>
+      <p style="color:var(--muted)">
+        ستظهر هنا الحسابات التي تنتظر موافقة الإدارة بعد تفعيل تحميل الحسابات.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>البريد الإلكتروني</th>
+              <th>الحالة</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody id="pendingUsers">
+            <tr>
+              <td colspan="4" class="empty-state">
+                جاري تجهيز نظام الموافقات...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="dashboardMessage" class="message" role="status"></div>
+    </section>
+
+    <section class="panel" style="margin-top:20px">
+      <h2>أقسام النظام</h2>
+      <div class="grid">
+        <div class="stat-card">
+          <div class="label">المبيعات</div>
+          <div class="value" style="font-size:18px">قريبًا</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">المخزون</div>
+          <div class="value" style="font-size:18px">قريبًا</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">الديون والحسابات</div>
+          <div class="value" style="font-size:18px">قريبًا</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">طلبات الطباعة</div>
+          <div class="value" style="font-size:18px">قريبًا</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./assets/js/dashboard.js"></script>
+</body>
+</html>
