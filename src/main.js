@@ -1,221 +1,82 @@
 
-/* =========================================
-   AGAML EL HDAYA ERP
-   MAIN APPLICATION ENTRY POINT
-   VERSION 1.0
-========================================= */
+/* AGAML EL HDAYA ERP - DIAGNOSTIC TEST */
 
-import { app, auth, db } from "./config/firebase.js";
+import { auth, db } from "./config/firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 
-import { observeAuthState } from "./modules/auth/auth.service.js";
+const loader = document.getElementById("appLoader");
+const content = document.getElementById("appContent");
+const errorBox = document.getElementById("appError");
+const errorMessage = document.getElementById("appErrorMessage");
 
-import {
-  watchCurrentUserProfile,
-  USER_ACCOUNT_STATUS
-} from "./modules/auth/user.service.js";
+function showResult(message, isError = false) {
+  loader.hidden = true;
+  errorBox.hidden = true;
+  content.hidden = false;
 
-/* ---------- DOM ELEMENTS ---------- */
-
-const appLoader = document.getElementById("appLoader");
-const appContent = document.getElementById("appContent");
-const appError = document.getElementById("appError");
-const appErrorMessage = document.getElementById("appErrorMessage");
-
-/* ---------- APPLICATION STATE ---------- */
-
-const state = {
-  initialized: false,
-  user: null,
-  profile: null,
-  authUnsubscribe: null,
-  profileUnsubscribe: null
-};
-
-/* ---------- UI HELPERS ---------- */
-
-function showLoader(message = "جاري تشغيل النظام...") {
-  appLoader.hidden = false;
-
-  const messageElement = appLoader.querySelector(
-    ".app-loader-message"
-  );
-
-  if (messageElement) {
-    messageElement.textContent = message;
-  }
-
-  appContent.hidden = true;
-  appError.hidden = true;
-}
-
-function showError(error) {
-  console.error("AGAML ERP ERROR:", error);
-
-  appLoader.hidden = true;
-  appContent.hidden = true;
-  appError.hidden = false;
-
-  appErrorMessage.textContent =
-    error?.message || "حدث خطأ أثناء تشغيل النظام.";
-}
-
-/* ---------- RENDER APPLICATION ---------- */
-
-function renderWelcome() {
-  appContent.innerHTML = `
-    <section style="
+  content.innerHTML = `
+    <div style="
       min-height:100vh;
+      background:#060a13;
+      color:white;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:24px;
-      box-sizing:border-box;
+      padding:20px;
+      direction:rtl;
+      font-family:Arial;
+      text-align:center;
     ">
-
       <div style="
-        width:100%;
-        max-width:650px;
-        padding:35px;
-        text-align:center;
         background:#101724;
-        border:1px solid #e9bd7240;
-        border-radius:22px;
-        box-sizing:border-box;
+        border:1px solid #e9bd72;
+        border-radius:18px;
+        padding:28px;
+        width:100%;
+        max-width:500px;
       ">
-
-        <div style="
-          color:#e9bd72;
-          font-size:28px;
-          font-weight:900;
-        ">
-          AGAML EL HDAYA
-        </div>
-
-        <h1 style="
-          color:#ffffff;
-          font-size:25px;
-          margin:20px 0 10px;
-        ">
-          نظام إدارة المكتبة
-        </h1>
-
-        <p style="
-          color:#aab2c0;
-          line-height:1.9;
-        ">
-          تم تشغيل التطبيق بنجاح.
-          <br>
-          جاري تجهيز وحدات النظام.
-        </p>
-
-        <div style="
-          margin-top:25px;
-          padding:15px;
-          background:#182333;
-          border-radius:12px;
-          color:#62d69a;
-        ">
-          ● التطبيق يعمل
-        </div>
-
-        <div style="
-          margin-top:12px;
-          color:#aab2c0;
-          font-size:13px;
-        ">
-          ${state.user ? "تم تسجيل الدخول" : "لم يتم تسجيل الدخول بعد"}
-        </div>
-
+        <h2 style="color:#e9bd72">AGAML EL HDAYA ERP</h2>
+        <h3>${isError ? "تعذر تشغيل الاختبار" : "اختبار الاتصال"}</h3>
+        <p style="line-height:2">${message}</p>
       </div>
-
-    </section>
+    </div>
   `;
-
-  appLoader.hidden = true;
-  appError.hidden = true;
-  appContent.hidden = false;
 }
 
-/* ---------- AUTH STATE ---------- */
+function showError(error) {
+  console.error(error);
+  showResult(error?.message || "خطأ غير معروف", true);
+}
 
-function handleAuthChange(user) {
-  state.user = user || null;
-
-  if (state.profileUnsubscribe) {
-    state.profileUnsubscribe();
-    state.profileUnsubscribe = null;
+try {
+  if (!auth || !db) {
+    throw new Error("Firebase Auth أو Firestore غير جاهز");
   }
 
-  if (!user) {
-    state.profile = null;
-    renderWelcome();
-    return;
-  }
-
-  showLoader("جاري تحميل بيانات الحساب...");
-
-  try {
-    state.profileUnsubscribe = watchCurrentUserProfile(
-      profile => {
-        state.profile = profile;
-
-        if (!profile || profile.exists === false) {
-          renderWelcome();
-          return;
-        }
-
-        if (profile.status === USER_ACCOUNT_STATUS.PENDING) {
-          renderWelcome();
-          return;
-        }
-
-        if (
-          profile.status === USER_ACCOUNT_STATUS.REJECTED ||
-          profile.status === USER_ACCOUNT_STATUS.DISABLED
-        ) {
-          renderWelcome();
-          return;
-        }
-
-        renderWelcome();
-      }
+  const timeout = setTimeout(() => {
+    showResult(
+      "الاتصال لم يكتمل خلال 15 ثانية. نحتاج مراجعة إعدادات Firebase وتحميل الملفات.",
+      true
     );
-  } catch (error) {
-    showError(error);
-  }
-}
+  }, 15000);
 
-/* ---------- INITIALIZE APPLICATION ---------- */
+  onAuthStateChanged(
+    auth,
+    user => {
+      clearTimeout(timeout);
 
-function initializeApplication() {
-  if (state.initialized) return;
-
-  state.initialized = true;
-
-  try {
-    if (!app || !auth || !db) {
-      throw new Error("Firebase لم يتم تهيئته بشكل صحيح.");
+      showResult(
+        user
+          ? "Firebase يعمل بنجاح. يوجد حساب مسجل الدخول."
+          : "Firebase يعمل بنجاح. لا يوجد حساب مسجل الدخول."
+      );
+    },
+    error => {
+      clearTimeout(timeout);
+      showError(error);
     }
+  );
 
-    showLoader("جاري الاتصال بخدمات النظام...");
-
-    state.authUnsubscribe = observeAuthState(
-      handleAuthChange,
-      error => showError(error)
-    );
-
-  } catch (error) {
-    showError(error);
-  }
+} catch (error) {
+  showError(error);
 }
-
-/* ---------- START ---------- */
-
-initializeApplication();
-
-/* ---------- CLEANUP ---------- */
-
-window.addEventListener("beforeunload", () => {
-  state.authUnsubscribe?.();
-  state.profileUnsubscribe?.();
-});
