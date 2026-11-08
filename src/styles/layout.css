@@ -1,0 +1,256 @@
+/* =====================================
+   AGAML EL HDAYA ERP
+   Application Layout
+===================================== */
+
+.app-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  background: var(--bg-main);
+}
+
+/* Sidebar */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 16px;
+  background: #080d17;
+  border-inline-end: 1px solid var(--border-color);
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  background: var(--brand-gold);
+  border-radius: 13px;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.brand-info {
+  min-width: 0;
+}
+
+.brand-name {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.brand-caption {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.sidebar-section {
+  margin-top: 25px;
+}
+
+.sidebar-section-title {
+  padding: 0 12px;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* Main Area */
+
+.main-area {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  background: rgba(6, 10, 19, 0.94);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(14px);
+}
+
+.topbar-title {
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  background: var(--brand-gold);
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.user-name {
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-role {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+/* Workspace */
+
+.workspace {
+  flex: 1;
+  width: 100%;
+  padding: 28px;
+}
+
+.workspace-inner {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* Footer */
+
+.app-footer {
+  padding: 18px 28px;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 11px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Mobile Navigation */
+
+.mobile-menu-button {
+  display: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-gold);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 90;
+    width: 280px;
+    max-width: 85vw;
+    transform: translateX(110%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop.is-visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgba(0, 0, 0, 0.65);
+  }
+
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .workspace {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    min-height: 65px;
+  }
+
+  .topbar-title {
+    font-size: 14px;
+  }
+
+  .user-profile {
+    padding: 5px;
+  }
+
+  .user-profile-info {
+    display: none;
+  }
+
+  .workspace {
+    padding: 14px 12px;
+  }
+
+  .app-footer {
+    padding: 14px;
+  }
+}
