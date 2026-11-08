@@ -1,0 +1,86 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Brand */
+  --bg-main: #060A13;
+  --bg-secondary: #0B1220;
+  --bg-card: #101A2A;
+  --bg-card-hover: #172338;
+
+  /* Gold */
+  --gold: #E9BD72;
+  --gold-light: #F5D69F;
+  --gold-dark: #B88A45;
+
+  /* Text */
+  --text-primary: #F5F5F5;
+  --text-secondary: #A5ADBA;
+  --text-muted: #6D7787;
+
+  /* Status */
+  --success: #28C990;
+  --danger: #F05B65;
+  --warning: #E9BD72;
+  --info: #5AA9FF;
+
+  /* Borders */
+  --border: rgba(233, 189, 114, 0.13);
+  --border-light: rgba(255, 255, 255, 0.08);
+
+  /* Layout */
+  --sidebar-width: 270px;
+  --header-height: 76px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+
+  /* Shadows */
+  --shadow-card: 0 12px 35px rgba(0, 0, 0, 0.25);
+
+  /* Typography */
+  --font-main: 'Cairo', sans-serif;
+
+  /* Transitions */
+  --transition: 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  direction: rtl;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  direction: rtl;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--bg-main);
+}
