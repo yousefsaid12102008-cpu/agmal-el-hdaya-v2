@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AGAML EL HDAYA ERP | System Test</title>
+
+  <link rel="stylesheet" href="src/styles/tokens.css">
+  <link rel="stylesheet" href="src/styles/global.css">
+  <link rel="stylesheet" href="src/styles/components.css">
+  <link rel="stylesheet" href="src/styles/layout.css">
+  <link rel="stylesheet" href="src/styles/auth.css">
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #060a13;
+      color: #fff;
+      font-family: Cairo, sans-serif;
+      padding: 20px;
+    }
+
+    .test-panel {
+      width: 100%;
+      max-width: 480px;
+      padding: 30px;
+      border: 1px solid #e9bd7240;
+      border-radius: 20px;
+      background: #101724;
+      text-align: center;
+    }
+
+    .test-logo {
+      color: #e9bd72;
+      font-size: 25px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .test-status {
+      margin: 24px 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: #182333;
+      text-align: right;
+    }
+
+    .test-status p {
+      margin: 9px 0;
+      font-size: 14px;
+    }
+
+    .status-wait {
+      color: #e9bd72;
+    }
+
+    .status-success {
+      color: #62d69a;
+    }
+
+    .status-error {
+      color: #ff7777;
+    }
+
+    .test-button {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: #e9bd72;
+      color: #060a13;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .test-footer {
+      color: #8993a4;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="test-panel">
+
+    <div class="test-logo">AGAML EL HDAYA</div>
+
+    <h2>اختبار تشغيل النظام</h2>
+
+    <p>نظام إدارة المكتبة ERP</p>
+
+    <div class="test-status">
+      <p id="htmlStatus" class="status-success">
+        ● HTML: يعمل
+      </p>
+
+      <p id="cssStatus" class="status-wait">
+        ● CSS: جاري الفحص
+      </p>
+
+      <p id="jsStatus" class="status-wait">
+        ● JavaScript: جاري الفحص
+      </p>
+
+      <p id="firebaseStatus" class="status-wait">
+        ● Firebase: جاري الاتصال
+      </p>
+
+      <p id="authStatus" class="status-wait">
+        ● Authentication: جاري الفحص
+      </p>
+
+      <p id="firestoreStatus" class="status-wait">
+        ● Firestore: لم يتم اختبار القراءة والكتابة
+      </p>
+    </div>
+
+    <button class="test-button" onclick="location.reload()">
+      إعادة الاختبار
+    </button>
+
+    <div class="test-footer">
+      AGAML EL HDAYA ERP — Development Test
+    </div>
+
+  </main>
+
+  <script>
+    function setStatus(id, message, type) {
+      const element = document.getElementById(id);
+      element.textContent = message;
+      element.className = type;
+    }
+
+    setStatus(
+      "cssStatus",
+      "● CSS: تم تحميل صفحة الاختبار",
+      "status-success"
+    );
+
+    setStatus(
+      "jsStatus",
+      "● JavaScript: يعمل",
+      "status-success"
+    );
+  </script>
+
+  <script type="module">
+    import { app, auth, db } from "./src/config/firebase.js";
+
+    if (!app || !auth || !db) {
+      throw new Error("Firebase initialization incomplete");
+    }
+
+    setStatus(
+      "firebaseStatus",
+      "● Firebase: تم التهيئة بنجاح",
+      "status-success"
+    );
+
+    setStatus(
+      "authStatus",
+      "● Authentication: تم تحميل الخدمة",
+      "status-success"
+    );
+
+    setStatus(
+      "firestoreStatus",
+      "● Firestore: تم تحميل الاتصال (لم نختبر الكتابة)",
+      "status-success"
+    );
+
+  </script>
+
+  <script type="module">
+    window.addEventListener("error", event => {
+      console.error(event.message);
+    });
+
+    window.addEventListener("unhandledrejection", event => {
+      console.error("Application error:", event.reason);
+
+      setStatus(
+        "firebaseStatus",
+        "● Firebase: حدث خطأ أثناء التهيئة",
+        "status-error"
+      );
+    });
+  </script>
+
+</body>
+</html>
