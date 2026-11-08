@@ -2,6 +2,7 @@
 /* =========================================
    AGAML EL HDAYA ERP
    AUTHENTICATION SERVICE
+   VERSION 1.1
 ========================================= */
 
 import {
@@ -17,7 +18,7 @@ import {
 
 import { auth } from "../../config/firebase.js";
 
-/* ---------- GOOGLE PROVIDER ---------- */
+/* GOOGLE PROVIDER */
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -25,7 +26,7 @@ googleProvider.setCustomParameters({
   prompt: "select_account"
 });
 
-/* ---------- VALIDATION ---------- */
+/* VALIDATION */
 
 function validateCredentials(email, password) {
   if (!email || !password) {
@@ -45,39 +46,24 @@ function validateCredentials(email, password) {
   return normalizedEmail;
 }
 
-/* ---------- ERROR MESSAGES ---------- */
+/* ERROR MESSAGES */
 
 function getAuthErrorMessage(error) {
   const messages = {
-    "auth/email-already-in-use":
-      "هذا البريد الإلكتروني مسجل بالفعل",
-
-    "auth/invalid-email":
-      "البريد الإلكتروني غير صحيح",
-
-    "auth/weak-password":
-      "كلمة المرور ضعيفة",
-
-    "auth/invalid-credential":
-      "بيانات الدخول غير صحيحة",
-
-    "auth/user-disabled":
-      "هذا الحساب موقوف",
-
-    "auth/too-many-requests":
-      "محاولات كثيرة، حاول مرة أخرى لاحقًا",
-
-    "auth/network-request-failed":
-      "تعذر الاتصال بالإنترنت",
-
-    "auth/popup-closed-by-user":
-      "تم إغلاق نافذة تسجيل الدخول"
+    "auth/email-already-in-use": "هذا البريد الإلكتروني مسجل بالفعل",
+    "auth/invalid-email": "البريد الإلكتروني غير صحيح",
+    "auth/weak-password": "كلمة المرور ضعيفة",
+    "auth/invalid-credential": "بيانات الدخول غير صحيحة",
+    "auth/user-disabled": "هذا الحساب موقوف",
+    "auth/too-many-requests": "محاولات كثيرة، حاول مرة أخرى لاحقًا",
+    "auth/network-request-failed": "تعذر الاتصال بالإنترنت",
+    "auth/popup-closed-by-user": "تم إغلاق نافذة تسجيل الدخول"
   };
 
-  return messages[error.code] || "حدث خطأ أثناء تنفيذ العملية";
+  return messages[error.code] || error.message || "حدث خطأ أثناء تنفيذ العملية";
 }
 
-/* ---------- CREATE ACCOUNT ---------- */
+/* CREATE ACCOUNT */
 
 export async function registerWithEmail({
   email,
@@ -85,10 +71,7 @@ export async function registerWithEmail({
   fullName
 }) {
   try {
-    const normalizedEmail = validateCredentials(
-      email,
-      password
-    );
+    const normalizedEmail = validateCredentials(email, password);
 
     if (!fullName || fullName.trim().length < 3) {
       throw new Error("يرجى إدخال الاسم بالكامل");
@@ -104,17 +87,10 @@ export async function registerWithEmail({
       displayName: fullName.trim()
     });
 
-    /*
-      Important:
-      Account creation does not grant any role or permissions.
-      Owner approval and user profile creation will be handled
-      securely by Cloud Functions in a later module.
-    */
-
     return {
       success: true,
       user: credential.user,
-      message: "تم إنشاء الحساب، ويحتاج إلى مراجعة واعتماد الإدارة"
+      message: "تم إنشاء الحساب، ويحتاج إلى اعتماد الإدارة"
     };
 
   } catch (error) {
@@ -122,17 +98,14 @@ export async function registerWithEmail({
   }
 }
 
-/* ---------- EMAIL LOGIN ---------- */
+/* EMAIL LOGIN */
 
 export async function loginWithEmail({
   email,
   password
 }) {
   try {
-    const normalizedEmail = validateCredentials(
-      email,
-      password
-    );
+    const normalizedEmail = validateCredentials(email, password);
 
     const credential = await signInWithEmailAndPassword(
       auth,
@@ -150,14 +123,11 @@ export async function loginWithEmail({
   }
 }
 
-/* ---------- GOOGLE LOGIN ---------- */
+/* GOOGLE LOGIN */
 
 export async function loginWithGoogle() {
   try {
-    const result = await signInWithPopup(
-      auth,
-      googleProvider
-    );
+    const result = await signInWithPopup(auth, googleProvider);
 
     return {
       success: true,
@@ -170,7 +140,7 @@ export async function loginWithGoogle() {
   }
 }
 
-/* ---------- LOGOUT ---------- */
+/* LOGOUT */
 
 export async function logout() {
   try {
@@ -186,7 +156,7 @@ export async function logout() {
   }
 }
 
-/* ---------- PASSWORD RESET ---------- */
+/* PASSWORD RESET */
 
 export async function resetPassword(email) {
   try {
@@ -194,16 +164,14 @@ export async function resetPassword(email) {
       throw new Error("يرجى إدخال البريد الإلكتروني");
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
-
     await sendPasswordResetEmail(
       auth,
-      normalizedEmail
+      email.trim().toLowerCase()
     );
 
     return {
       success: true,
-      message: "إذا كان البريد مسجلًا، ستصلك رسالة استعادة كلمة المرور"
+      message: "تم إرسال طلب استعادة كلمة المرور"
     };
 
   } catch (error) {
@@ -211,17 +179,27 @@ export async function resetPassword(email) {
   }
 }
 
-/* ---------- AUTH STATE ---------- */
+/* AUTH STATE */
 
-export function observeAuthState(callback) {
+export function observeAuthState(callback, onError) {
   if (typeof callback !== "function") {
     throw new Error("يجب توفير دالة لمتابعة حالة الحساب");
   }
 
-  return onAuthStateChanged(auth, callback);
+  return onAuthStateChanged(
+    auth,
+    callback,
+    error => {
+      if (typeof onError === "function") {
+        onError(error);
+      } else {
+        console.error("AUTH STATE ERROR:", error);
+      }
+    }
+  );
 }
 
-/* ---------- CURRENT USER ---------- */
+/* CURRENT USER */
 
 export function getCurrentUser() {
   return auth.currentUser;
