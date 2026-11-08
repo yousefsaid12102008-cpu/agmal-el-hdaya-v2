@@ -1,9 +1,12 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
 import { getAuth } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
 import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "ضع مفتاح Firebase هنا",
+  apiKey: "AIzaSyBH2GKFImIX1lyRIyyYYyaWjdH4idrqK9s",
   authDomain: "agmal-el-hdaya-erp.firebaseapp.com",
   projectId: "agmal-el-hdaya-erp",
   storageBucket: "agmal-el-hdaya-erp.firebasestorage.app",
@@ -12,8 +15,8 @@ const firebaseConfig = {
   measurementId: "G-P1S2LCMWVW"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
 export const db = getFirestore(app);
-export default app;
