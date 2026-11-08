@@ -1,22 +1,38 @@
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+<script type="module">
+  const firebaseStatus = document.getElementById("firebaseStatus");
+  const authStatus = document.getElementById("authStatus");
+  const firestoreStatus = document.getElementById("firestoreStatus");
 
-import { getAuth } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+  function show(id, message, success) {
+    const el = document.getElementById(id);
+    el.textContent = message;
+    el.className = success ? "status-success" : "status-error";
+  }
 
-import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+  try {
+    show("firebaseStatus", "● Firebase: جاري التحميل...", true);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBH2GKFImIX1lyRIyyYYyaWjdH4idrqK9s",
-  authDomain: "agmal-el-hdaya-erp.firebaseapp.com",
-  projectId: "agmal-el-hdaya-erp",
-  storageBucket: "agmal-el-hdaya-erp.firebasestorage.app",
-  messagingSenderId: "220694465411",
-  appId: "1:220694465411:web:90ca8ae3995077792fc4b6",
-  measurementId: "G-P1S2LCMWVW"
-};
+    const firebase = await import("./src/config/firebase.js");
 
-export const app = initializeApp(firebaseConfig);
+    if (!firebase.app || !firebase.auth || !firebase.db) {
+      throw new Error("Firebase exports are missing");
+    }
 
-export const auth = getAuth(app);
+    show("firebaseStatus", "● Firebase: تم التهيئة بنجاح", true);
+    show("authStatus", "● Authentication: تم تحميل الخدمة", true);
+    show("firestoreStatus", "● Firestore: تم تحميل الخدمة", true);
 
-export const db = getFirestore(app);
+  } catch (error) {
+    console.error("Firebase test error:", error);
+
+    show(
+      "firebaseStatus",
+      "● Firebase: فشل الاتصال - " + error.message,
+      false
+    );
+
+    show("authStatus", "● Authentication: لم يتم التحميل", false);
+    show("firestoreStatus", "● Firestore: لم يتم التحميل", false);
+  }
+</script>
