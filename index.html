@@ -4,195 +4,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#060a13">
 
-  <title>AGAML EL HDAYA ERP | System Test</title>
+  <title>AGAML EL HDAYA ERP | مكتبة أجمل الهدايا</title>
 
+  <meta name="description" content="نظام إدارة مكتبة أجمل الهدايا - إدارة المبيعات والمخزون والحسابات والموظفين">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Application Styles -->
   <link rel="stylesheet" href="src/styles/tokens.css">
   <link rel="stylesheet" href="src/styles/global.css">
   <link rel="stylesheet" href="src/styles/components.css">
   <link rel="stylesheet" href="src/styles/layout.css">
   <link rel="stylesheet" href="src/styles/auth.css">
+  <link rel="stylesheet" href="src/styles/dashboard.css">
+  <link rel="stylesheet" href="src/styles/tables.css">
+  <link rel="stylesheet" href="src/styles/print.css">
 
   <style>
     body {
+      margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
       background: #060a13;
-      color: #fff;
-      font-family: Cairo, sans-serif;
-      padding: 20px;
+      font-family: "Cairo", sans-serif;
     }
 
-    .test-panel {
-      width: 100%;
-      max-width: 480px;
-      padding: 30px;
-      border: 1px solid #e9bd7240;
-      border-radius: 20px;
-      background: #101724;
+    #app {
+      min-height: 100vh;
+    }
+
+    .app-loader {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      color: #e9bd72;
       text-align: center;
     }
 
-    .test-logo {
-      color: #e9bd72;
-      font-size: 25px;
-      font-weight: 800;
-      margin-bottom: 10px;
+    .app-loader-logo {
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: 1px;
     }
 
-    .test-status {
-      margin: 24px 0;
-      padding: 14px;
-      border-radius: 12px;
-      background: #182333;
-      text-align: right;
+    .app-loader-ring {
+      width: 38px;
+      height: 38px;
+      border: 3px solid #273142;
+      border-top-color: #e9bd72;
+      border-radius: 50%;
+      animation: loader-spin 0.8s linear infinite;
     }
 
-    .test-status p {
-      margin: 9px 0;
-      font-size: 14px;
+    .app-loader-message {
+      color: #aab2c0;
+      font-size: 13px;
     }
 
-    .status-wait {
-      color: #e9bd72;
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
     }
 
-    .status-success {
-      color: #62d69a;
+    .app-error {
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 24px;
+      color: #ff8585;
+      background: #171d29;
+      border: 1px solid #693b42;
+      border-radius: 14px;
+      text-align: center;
     }
 
-    .status-error {
-      color: #ff7777;
-    }
-
-    .test-button {
-      width: 100%;
-      padding: 13px;
-      border: 0;
-      border-radius: 10px;
-      background: #e9bd72;
-      color: #060a13;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .test-footer {
-      color: #8993a4;
-      font-size: 12px;
-      margin-top: 20px;
+    [hidden] {
+      display: none !important;
     }
   </style>
 </head>
 
 <body>
 
-  <main class="test-panel">
+  <div id="app">
 
-    <div class="test-logo">AGAML EL HDAYA</div>
+    <!-- Application Loading -->
+    <section id="appLoader" class="app-loader">
+      <div class="app-loader-logo">
+        AGAML EL HDAYA
+      </div>
 
-    <h2>اختبار تشغيل النظام</h2>
+      <div class="app-loader-ring"></div>
 
-    <p>نظام إدارة المكتبة ERP</p>
+      <div class="app-loader-message">
+        جاري تشغيل نظام إدارة المكتبة...
+      </div>
+    </section>
 
-    <div class="test-status">
-      <p id="htmlStatus" class="status-success">
-        ● HTML: يعمل
+    <!-- Main Application -->
+    <main id="appContent" hidden></main>
+
+    <!-- Application Error -->
+    <section id="appError" class="app-error" hidden>
+      <h2>تعذر تشغيل النظام</h2>
+      <p id="appErrorMessage">
+        حدث خطأ أثناء تحميل التطبيق.
       </p>
+      <button onclick="location.reload()">
+        إعادة المحاولة
+      </button>
+    </section>
 
-      <p id="cssStatus" class="status-wait">
-        ● CSS: جاري الفحص
-      </p>
+  </div>
 
-      <p id="jsStatus" class="status-wait">
-        ● JavaScript: جاري الفحص
-      </p>
-
-      <p id="firebaseStatus" class="status-wait">
-        ● Firebase: جاري الاتصال
-      </p>
-
-      <p id="authStatus" class="status-wait">
-        ● Authentication: جاري الفحص
-      </p>
-
-      <p id="firestoreStatus" class="status-wait">
-        ● Firestore: لم يتم اختبار القراءة والكتابة
-      </p>
-    </div>
-
-    <button class="test-button" onclick="location.reload()">
-      إعادة الاختبار
-    </button>
-
-    <div class="test-footer">
-      AGAML EL HDAYA ERP — Development Test
-    </div>
-
-  </main>
-
-  <script>
-    function setStatus(id, message, type) {
-      const element = document.getElementById(id);
-      element.textContent = message;
-      element.className = type;
-    }
-
-    setStatus(
-      "cssStatus",
-      "● CSS: تم تحميل صفحة الاختبار",
-      "status-success"
-    );
-
-    setStatus(
-      "jsStatus",
-      "● JavaScript: يعمل",
-      "status-success"
-    );
-  </script>
-
-  <script type="module">
-    import { app, auth, db } from "./src/config/firebase.js";
-
-    if (!app || !auth || !db) {
-      throw new Error("Firebase initialization incomplete");
-    }
-
-    setStatus(
-      "firebaseStatus",
-      "● Firebase: تم التهيئة بنجاح",
-      "status-success"
-    );
-
-    setStatus(
-      "authStatus",
-      "● Authentication: تم تحميل الخدمة",
-      "status-success"
-    );
-
-    setStatus(
-      "firestoreStatus",
-      "● Firestore: تم تحميل الاتصال (لم نختبر الكتابة)",
-      "status-success"
-    );
-
-  </script>
-
-  <script type="module">
-    window.addEventListener("error", event => {
-      console.error(event.message);
-    });
-
-    window.addEventListener("unhandledrejection", event => {
-      console.error("Application error:", event.reason);
-
-      setStatus(
-        "firebaseStatus",
-        "● Firebase: حدث خطأ أثناء التهيئة",
-        "status-error"
-      );
-    });
-  </script>
+  <!-- Application Entry Point -->
+  <script type="module" src="src/main.js"></script>
 
 </body>
 </html>
