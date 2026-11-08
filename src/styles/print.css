@@ -1,0 +1,469 @@
+
+/* =========================================
+   AGAML EL HDAYA ERP
+   PRINT SYSTEM
+   A4 - THERMAL - QR - BARCODE LABELS
+========================================= */
+
+/* ---------- PRINT VARIABLES ---------- */
+
+:root {
+  --print-black: #000000;
+  --print-white: #ffffff;
+  --print-border: #cccccc;
+  --print-font: Arial, sans-serif;
+}
+
+/* ---------- PRINT BASE ---------- */
+
+.print-document {
+  background: var(--print-white);
+  color: var(--print-black);
+  font-family: var(--print-font);
+  direction: rtl;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.print-hidden {
+  display: none !important;
+}
+
+.print-only {
+  display: none;
+}
+
+/* ---------- INVOICE BASE ---------- */
+
+.invoice {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #000;
+  margin-bottom: 18px;
+}
+
+.invoice-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.invoice-brand-name {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.invoice-brand-details {
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.invoice-title {
+  font-size: 19px;
+  font-weight: 800;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.invoice-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 20px;
+  margin-bottom: 18px;
+}
+
+.invoice-meta-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dotted #aaa;
+}
+
+.invoice-meta-label {
+  font-weight: 700;
+}
+
+.invoice-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.invoice-items th,
+.invoice-items td {
+  border: 1px solid #000;
+  padding: 8px 6px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.invoice-items th {
+  background: #eee !important;
+  font-weight: 800;
+}
+
+.invoice-items td.product-name {
+  text-align: right;
+}
+
+.invoice-totals {
+  width: 100%;
+  max-width: 350px;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+
+.invoice-totals td {
+  padding: 7px;
+  border-bottom: 1px solid #ddd;
+}
+
+.invoice-totals .grand-total {
+  font-size: 16px;
+  font-weight: 900;
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+}
+
+.invoice-footer {
+  margin-top: 25px;
+  padding-top: 12px;
+  border-top: 1px solid #000;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.invoice-payment-status {
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid #000;
+  font-weight: 700;
+}
+
+/* ---------- THERMAL 80MM ---------- */
+
+.invoice-thermal {
+  width: 80mm;
+  max-width: 80mm;
+  padding: 3mm;
+  font-size: 11px;
+}
+
+.invoice-thermal .invoice-header {
+  display: block;
+  text-align: center;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.invoice-thermal .invoice-brand-name {
+  font-size: 17px;
+}
+
+.invoice-thermal .invoice-title {
+  font-size: 15px;
+  margin: 10px 0;
+}
+
+.invoice-thermal .invoice-meta {
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.invoice-thermal .invoice-items {
+  font-size: 10px;
+}
+
+.invoice-thermal .invoice-items th,
+.invoice-thermal .invoice-items td {
+  padding: 4px 2px;
+}
+
+.invoice-thermal .invoice-totals {
+  max-width: 100%;
+}
+
+.invoice-thermal .invoice-totals td {
+  padding: 5px 2px;
+}
+
+.invoice-thermal .invoice-footer {
+  margin-top: 15px;
+}
+
+/* ---------- A4 INVOICE ---------- */
+
+.invoice-a4 {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm;
+}
+
+.invoice-a4 .invoice-items th,
+.invoice-a4 .invoice-items td {
+  padding: 10px;
+}
+
+/* ---------- QR & BARCODE ---------- */
+
+.print-code-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px auto;
+  text-align: center;
+}
+
+.print-qr {
+  width: 28mm;
+  height: 28mm;
+  object-fit: contain;
+}
+
+.print-barcode {
+  max-width: 55mm;
+  height: 18mm;
+  object-fit: contain;
+}
+
+.print-code-caption {
+  font-size: 10px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- PRODUCT LABELS ---------- */
+
+.label-sheet {
+  display: grid;
+  grid-template-columns: repeat(var(--label-columns, 3), 1fr);
+  grid-auto-rows: var(--label-height, 45mm);
+  gap: var(--label-gap, 3mm);
+  padding: var(--label-margin, 5mm);
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.product-label {
+  border: 1px solid #777;
+  padding: 3mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  color: #000;
+  background: #fff;
+  break-inside: avoid;
+  box-sizing: border-box;
+}
+
+.product-label-name {
+  font-size: 11px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.product-label-price {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.product-label-code {
+  font-size: 9px;
+  direction: ltr;
+}
+
+.product-label .print-qr {
+  width: 18mm;
+  height: 18mm;
+}
+
+.product-label .print-barcode {
+  width: 90%;
+  height: 12mm;
+}
+
+/* ---------- LABEL PREVIEW ---------- */
+
+.label-preview {
+  background: #f1f1f1;
+  padding: 20px;
+  overflow: auto;
+}
+
+.label-preview .label-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- PRINT CONTROLS ---------- */
+
+.print-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.print-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.print-option input,
+.print-option select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* ---------- PAGE BREAKS ---------- */
+
+.print-page-break {
+  break-after: page;
+  page-break-after: always;
+}
+
+.print-avoid-break {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* ---------- PRINT MEDIA ---------- */
+
+@media print {
+  @page {
+    margin: 8mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-document,
+  .print-document * {
+    visibility: visible;
+  }
+
+  .print-document {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important;
+  }
+
+  .print-hidden,
+  .no-print,
+  .print-toolbar,
+  .sidebar,
+  .topbar,
+  .app-sidebar,
+  .app-topbar,
+  button {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .invoice {
+    box-shadow: none !important;
+    border: none;
+    margin: 0;
+  }
+
+  .invoice-thermal {
+    width: 80mm !important;
+    max-width: 80mm !important;
+    padding: 2mm !important;
+  }
+
+  .invoice-a4 {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+  }
+
+  .label-preview {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+
+  .label-preview .label-sheet {
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .product-label {
+    border: 1px solid #999;
+  }
+
+  .invoice-items th {
+    background: #eee !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* ---------- A4 LABEL PAGE ---------- */
+
+@page labels-a4 {
+  size: A4 portrait;
+  margin: 5mm;
+}
+
+.label-sheet-a4 {
+  page: labels-a4;
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .label-preview,
+  .product-label {
+    transition: none !important;
+  }
+}
