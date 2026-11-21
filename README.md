@@ -59,3 +59,9 @@ Sources checked 21 November 2026:
 ## Scope still incomplete
 
 Live Auth/Google OAuth, App Check, production bootstrap and real-project acceptance remain unverified. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
+
+## Activation update: email verification and owner management
+
+The latest review adds verification email/resend/reload with mandatory verified token before dashboard access, an owner-only aggregate registered-profile count, paged account management with suspension/reactivation, and registration/latest-login/device details. Only the latest client-reported sign-in is retained, not full history. Browsers may hide exact phone models; the UI never invents them. Activity reads are owner-only; users may write only their own fixed-shape current-timestamp activity. Each sign-in adds one write, and each account page reads at most 50 profiles plus their activity documents.
+
+Live setup progress: reviewed rules were published and the existing Pages hostname authorized on 21 November 2026. Providers were already enabled. App Check setup is waiting on a Google Cloud terms decision. No new site build or owner bootstrap yet. The owner has chosen email/password signup and an explicitly controlled administrative verification exception for his own first-owner bootstrap, not an exemption for other accounts.
