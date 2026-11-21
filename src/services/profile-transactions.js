@@ -7,7 +7,8 @@ export async function registerProfile(db,user,requestedRole='customer'){
  const token=await user.getIdTokenResult();
  const ref=doc(db,'users',user.uid),audit=doc(collection(db,'audit_logs'));
  return runTransaction(db,async tx=>{
-  if((await tx.get(ref)).exists())return {ok:true};
+  const existing=await tx.get(ref);
+  if(existing.exists()){if(token.claims.email_verified===true && existing.data().emailVerified===false)tx.update(ref,{emailVerified:true,updatedAt:serverTimestamp()});return {ok:true};}
   const now=serverTimestamp();
   const p={uid:user.uid,displayName:(user.displayName||'حساب جديد').slice(0,120),email:token.claims.email,emailVerified:token.claims.email_verified===true,role:'customer',requestedRole,status:'pending',permissions:[],createdAt:now,updatedAt:now,lastAuditId:audit.id};
   tx.set(ref,p);tx.set(audit,{actorUid:user.uid,action:'user.requested',targetUid:user.uid,before:null,after:{status:'pending',role:'customer',permissions:[]},createdAt:now});return {ok:true};
