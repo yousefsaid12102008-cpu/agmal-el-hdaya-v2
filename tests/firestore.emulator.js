@@ -35,7 +35,7 @@ test('active owner can inspect users and audit; suspended owner cannot',async()=
  const owner=dbFor('owner');await assertSucceeds(getDocs(collection(owner,'users')));await assertSucceeds(getDocs(collection(owner,'audit_logs')));
  await assertFails(getDoc(doc(dbFor('suspended'),'audit_logs','entry')));
 });
-test('no client including owner can create, promote or delete profiles',async()=>{
+test('no client can create privileged profiles, self-promote or delete profiles',async()=>{
  for(const uid of ['owner','employee','customer','pending']){
   const db=dbFor(uid);
   await assertFails(setDoc(doc(db,'users','new-user'),{role:'owner',status:'active'}));
@@ -43,7 +43,7 @@ test('no client including owner can create, promote or delete profiles',async()=
   await assertFails(deleteDoc(doc(db,'users','customer')));
  }
 });
-test('operational collections and client audit writes remain closed for every role',async()=>{
+test('operational collections and unpaired client audit writes remain closed',async()=>{
  for(const uid of ['owner','employee','customer','pending','suspended']){
   const db=dbFor(uid);
   await assertFails(getDoc(doc(db,'accounts','cash')));await assertFails(getDoc(doc(db,'sales','sale')));
