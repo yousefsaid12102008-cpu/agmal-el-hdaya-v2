@@ -28,7 +28,7 @@ test('registration, approval, denial, suspension and audit callable integration'
  await assert.rejects(employee.register({requestedRole:'owner'}),e=>e.code==='functions/invalid-argument');
  await employee.register({requestedRole:'employee'});
  let p=(await db.doc(`users/${uid}`).get()).data();
- assert.equal(p.requestedRole,'employee');assert.equal(p.role,'customer');assert.equal(p.status,'pending');assert.deepEqual(p.permissions,[]);
+ assert.equal(p.email,`employee-${stamp}@example.test`);assert.equal(p.emailVerified,false);assert.equal(p.requestedRole,'employee');assert.equal(p.role,'customer');assert.equal(p.status,'pending');assert.deepEqual(p.permissions,[]);
  assert.ok(p.createdAt?.toMillis());
  const before=(await db.collection('audit_logs').where('targetUid','==',uid).get()).size;
  await Promise.all([employee.register({requestedRole:'customer'}),employee.register({requestedRole:'owner'}).catch(()=>{})]);
@@ -43,6 +43,7 @@ test('registration, approval, denial, suspension and audit callable integration'
  await assert.rejects(owner.review({uid,status:'active',role:'employee',permissions:['manage_treasury']}),e=>e.code==='functions/invalid-argument');
  await assert.rejects(owner.review({uid:o.user.uid,status:'active',role:'employee',permissions:[]}),e=>e.code==='functions/invalid-argument');
  await owner.review({uid,status:'active',role:'employee',permissions:['view_inventory']});
+ await assert.rejects(owner.review({uid,status:'rejected',role:'employee',permissions:[],expectedStatus:'pending'}),e=>e.code==='functions/failed-precondition');
  p=(await db.doc(`users/${uid}`).get()).data();assert.equal(p.status,'active');assert.equal(p.role,'employee');assert.equal(p.reviewedBy,o.user.uid);
  const second=client('second-device-'+stamp);await signInWithEmailAndPassword(second.auth,`employee-${stamp}@example.test`,'Local-emulator-only-2026!');
  assert.equal(second.auth.currentUser.uid,uid);
