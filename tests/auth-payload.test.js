@@ -15,13 +15,13 @@ test('profile request rejects self-selected privileged and unknown roles', () =>
   }
 });
 
-test('auth callable wrapper sends requestedRole rather than an empty payload', async () => {
+test('Spark transaction wrapper preserves requestedRole', async () => {
   let source = await readFile(new URL('../src/services/auth.service.js', import.meta.url), 'utf8');
   source = source.replace(/^import .*;\n/gm, '');
   const calls = [];
   const mocks = {
-    configured:true, functions:{}, auth:{}, profileRequest,
-    httpsCallable:(_functions,name) => async payload => {calls.push({name,payload}); return {ok:true};}
+    configured:true, db:{}, auth:{currentUser:{}}, profileRequest,
+    registerProfile:async (_db,_user,requestedRole) => {calls.push(requestedRole); return {ok:true};}
   };
   const names = Object.keys(mocks);
   const body = source.replace(/export /g,'') + '\nreturn {ensureProfile};';
@@ -29,7 +29,6 @@ test('auth callable wrapper sends requestedRole rather than an empty payload', a
   await api.ensureProfile('employee');
   await api.ensureProfile('customer');
   assert.deepEqual(calls, [
-    {name:'registerProfile',payload:{requestedRole:'employee'}},
-    {name:'registerProfile',payload:{requestedRole:'customer'}}
+    'employee','customer'
   ]);
 });
