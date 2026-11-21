@@ -1,3 +1,4 @@
+import {renderProductsPreview} from './pages/products-preview.js';
 import {renderInvoicePreview} from './pages/invoice-preview.js';
 import {renderApprovals} from './pages/approvals.js';
 import {renderDashboard} from './pages/dashboard.js';
@@ -33,6 +34,7 @@ function icon(name){
 }
 function authView(){
  viewStop();viewStop=()=>{};ownerPage='dashboard';
+ if(location.hash==='#preview/products'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderProductsPreview(root);return;}
  if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderInvoicePreview(root);return;}
  if(location.hash==='#preview/accounts'&&!configured){
   const examples=[{uid:'example-employee',displayName:'طلب موظف توضيحي',email:'employee@example.test',emailVerified:false,requestedRole:'employee'},{uid:'example-customer',displayName:'طلب عميل توضيحي',email:'customer@example.test',emailVerified:false,requestedRole:'customer'}];
