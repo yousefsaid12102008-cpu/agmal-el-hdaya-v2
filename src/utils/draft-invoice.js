@@ -1,0 +1,3 @@
+// Draft helpers only. No invoice number, ledger, payment or stock persistence.
+export function parseDraftMoney(value){const text=String(value).trim();if(!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(text))throw Error('أدخل مبلغًا غير سالب بحد أقصى رقمين بعد العلامة.');const [whole,fraction='']=text.split('.'),result=Number(whole)*100+Number(fraction.padEnd(2,'0'));if(!Number.isSafeInteger(result))throw Error('المبلغ أكبر من الحد الآمن.');return result;}
+export function addDraftProduct(lines,product){const found=lines.find(x=>x.code===product.code);return found?lines.map(x=>x.code===product.code?{...x,quantity:x.quantity+1}:x):[...lines,{...product,quantity:1}];}
