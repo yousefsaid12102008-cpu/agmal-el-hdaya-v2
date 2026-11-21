@@ -15,7 +15,7 @@ Status: emulator rehearsal only. No live owner account has been created or promo
 - Refuse if the marker exists or any owner already exists, including suspended owners. Owner replacement/recovery is a separate approved procedure.
 - In the same transaction set only the approved UID to active owner, create the marker and append an audit record. Never promote by email lookup alone.
 - Confirm the record and audit entry, then test live owner access and denial from a separate non-owner account. Verify App Check and default-deny operational rules before enabling live access.
-- Do not leave broad admin credentials on a workstation, in browser code, environment samples, logs or the repository. No live command is provided here because live setup is not yet authorized or reviewed.
+- Do not leave broad admin credentials on a workstation, in browser code, environment samples, logs or the repository. No live bootstrap command is embedded in this repository. Activation approval exists, but exact-account binding and current-state checks are still required.
 
 ## Rehearsal supplied
 
@@ -24,3 +24,7 @@ Status: emulator rehearsal only. No live owner account has been created or promo
 `tests/bootstrap.emulator.js` checks fail-closed project/UID/verification gates, missing profile, concurrent attempts, one owner, one marker, one audit event and refusal to run again. This rehearsal establishes behavior, not permission or readiness to promote a real account.
 
 The active application now uses Auth + Firestore transactions and rules on Spark, with no Cloud Functions requirement. A privileged first-owner operation is still necessary because clients must never grant owner. It may be performed by a separately approved administrative route without adding a paid runtime. This file supplies no live command. Live setup still requires exact UID approval, reviewed rules, production App Check acceptance and real account tests. Spark remains unchanged.
+
+## Owner-only verification exception approved in conversation
+
+The owner will choose email/password and register himself. Only his exact account may be administratively marked email-verified during the controlled first-owner operation, after binding its live UID and email through the authenticated conversation. This exception never applies to other users, never creates a public bypass and never changes ordinary email-verification rules. Re-read the actual approval and live state before execution.
