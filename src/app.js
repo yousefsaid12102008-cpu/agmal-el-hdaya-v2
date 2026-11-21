@@ -1,3 +1,4 @@
+import {renderLabelsPreview} from './pages/labels-preview.js';
 import {renderProductsPreview} from './pages/products-preview.js';
 import {renderInvoicePreview} from './pages/invoice-preview.js';
 import {renderApprovals} from './pages/approvals.js';
@@ -34,6 +35,7 @@ function icon(name){
 }
 function authView(){
  viewStop();viewStop=()=>{};ownerPage='dashboard';
+ if(location.hash==='#preview/labels'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderLabelsPreview(root);return;}
  if(location.hash==='#preview/products'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderProductsPreview(root);return;}
  if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderInvoicePreview(root);return;}
  if(location.hash==='#preview/accounts'&&!configured){
@@ -73,6 +75,6 @@ function sessionView(profile){
  document.querySelector('#logout').onclick=()=>run(logout);
  document.querySelector('#menu').onclick=e=>{const collapsed=document.querySelector('.workspace').classList.toggle('collapsed');e.target.setAttribute('aria-expanded',String(!collapsed));};
 }
-window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts','#preview/products','#preview/invoice'].includes(location.hash)||document.querySelector('.entry'))authView();});
+window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts','#preview/products','#preview/invoice','#preview/labels'].includes(location.hash)||document.querySelector('.entry'))authView();});
 authView();
 watchAuth(async user=>{unwatch();if(!user){authView();return;}sessionView(null);try{unwatch=watchProfile(user.uid,sessionView,()=>{sessionView(null);document.querySelector('#status').textContent='تعذر تحميل حالة الحساب. لا توجد صلاحيات تشغيلية متاحة.';});}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}});
