@@ -1,0 +1,31 @@
+import {chromium} from '@playwright/test';
+import {spawn} from 'node:child_process';
+import {createRequire} from 'node:module';
+import assert from 'node:assert/strict';
+const require=createRequire(new URL('../functions/package.json',import.meta.url));
+const {initializeApp,deleteApp}=require('firebase-admin/app');
+const {getAuth}=require('firebase-admin/auth');const {getFirestore,FieldValue}=require('firebase-admin/firestore');
+if(process.env.GCLOUD_PROJECT!=='demo-agaml-phase1'||!process.env.FIRESTORE_EMULATOR_HOST||!process.env.FIREBASE_AUTH_EMULATOR_HOST)throw new Error('Demo emulators required');
+const admin=initializeApp({projectId:'demo-agaml-phase1'}),db=getFirestore(admin),auth=getAuth(admin);let browser;
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','4179'],{env:{...process.env,VITE_FIREBASE_API_KEY:'demo-key',VITE_FIREBASE_AUTH_DOMAIN:'demo-agaml-phase1.firebaseapp.com',VITE_FIREBASE_PROJECT_ID:'demo-agaml-phase1',VITE_FIREBASE_APP_ID:'demo-app',VITE_FIREBASE_REGION:'me-central2',VITE_FIREBASE_USE_EMULATORS:'true'}});
+const suffix=Date.now(),password='Emulator-only-test-9876!';
+async function seed(uid,displayName,requestedRole='customer',status='pending',role='customer'){
+ await auth.createUser({uid,email:`${uid}@example.test`,password,emailVerified:true});await db.doc('users/'+uid).set({uid,displayName,email:`${uid}@example.test`,emailVerified:true,requestedRole,status,role,permissions:[],createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()});
+}
+try{
+ const owner='ui-owner-'+suffix,employee='ui-employee-'+suffix,customer='ui-customer-'+suffix,stale='ui-stale-'+suffix;
+ await seed(owner,'مالك اختبار','customer','active','owner');await seed(employee,'طلب موظف تجريبي','employee');await seed(customer,'طلب عميل تجريبي');await seed(stale,'طلب جلسة أخرى','employee');
+ for(let i=0;i<50;i++){try{if((await fetch('http://127.0.0.1:4179')).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
+ browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const page=await browser.newPage({viewport:{width:1440,height:1050}});const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ await page.goto('http://127.0.0.1:4179');await page.locator('#email').fill(owner+'@example.test');await page.locator('#password').fill(password);await page.locator('button.primary').click();await page.locator('#open-accounts').click();
+ await page.locator(`[data-uid="${employee}"]`).click();assert.equal(await page.locator('#approval-role').inputValue(),'employee');assert.equal(await page.locator('#permission-options input:checked').count(),0);await page.evaluate(()=>document.fonts.ready);
+ await page.screenshot({path:'/downloads/approval-desktop-v1.png',fullPage:true});
+ for(const width of [390,320]){await page.setViewportSize({width,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);if(width===390)await page.screenshot({path:'/downloads/approval-mobile-v1.png',fullPage:true});}
+ await page.setViewportSize({width:1440,height:1050});await page.locator('#permission-options input[value=view_inventory]').check();await page.locator('#approve-account').click();await page.screenshot({path:'/downloads/approval-confirm-v1.png'});await page.getByRole('button',{name:'رجوع',exact:true}).click();assert.equal((await db.doc('users/'+employee).get()).data().status,'pending');
+ await page.locator('#approve-account').click();await page.locator('#confirm-decision').click();await page.getByRole('status').filter({hasText:'تم اعتماد الحساب'}).waitFor();let record=(await db.doc('users/'+employee).get()).data();assert.equal(record.status,'active');assert.deepEqual(record.permissions,['view_inventory']);assert.equal(record.reviewedBy,owner);
+ await page.locator(`[data-uid="${customer}"]`).click();assert.equal(await page.locator('#approval-role').inputValue(),'customer');assert.equal(await page.locator('#permission-options input').count(),3);await page.locator('#reject-account').click();await page.locator('#confirm-decision').click();await page.getByRole('status').filter({hasText:'تم رفض الطلب'}).waitFor();assert.equal((await db.doc('users/'+customer).get()).data().status,'rejected');
+ await page.locator(`[data-uid="${stale}"]`).click();await page.locator('#approve-account').click();await db.doc('users/'+stale).update({status:'rejected'});await page.locator('dialog[open]').waitFor({state:'hidden'});assert.equal((await db.doc('users/'+stale).get()).data().status,'rejected');
+ await db.doc('users/'+owner).update({status:'suspended'});await page.locator('.workspace').waitFor();assert.equal(await page.locator('#approval-form').count(),0);
+ const second=await browser.newPage();await second.goto('http://127.0.0.1:4179');await second.locator('#email').fill(employee+'@example.test');await second.locator('#password').fill(password);await second.locator('button.primary').click();await second.locator('.erp-shell').waitFor();assert.equal(await second.locator('#open-accounts').count(),0);
+ const logs=await db.collection('audit_logs').where('actorUid','==',owner).get();assert.equal(logs.size,2);assert.deepEqual(errors,[]);console.log('PASS emulator owner approval/reject, no automatic permissions, cancel, audit, realtime stale closure, suspended-owner eviction, staff gate, mobile layout');
+}finally{await browser?.close();server.kill();await deleteApp(admin);}
