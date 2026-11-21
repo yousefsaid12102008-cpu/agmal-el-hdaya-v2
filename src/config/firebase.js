@@ -1,4 +1,5 @@
 import {initializeApp} from 'firebase/app';
+import {getAnalytics,isSupported} from 'firebase/analytics';
 import {getAuth, connectAuthEmulator} from 'firebase/auth';
 import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 import {initializeAppCheck, ReCaptchaEnterpriseProvider} from 'firebase/app-check';
@@ -7,7 +8,8 @@ const config={apiKey:env.VITE_FIREBASE_API_KEY,authDomain:env.VITE_FIREBASE_AUTH
 export const configured=Object.values(config).every(Boolean);
 export let auth=null,db=null;
 if(configured){
- const app=initializeApp(config);
+ const app=initializeApp({...config,measurementId:env.VITE_FIREBASE_MEASUREMENT_ID});
+ if(env.PROD&&env.VITE_FIREBASE_MEASUREMENT_ID)isSupported().then(ok=>{if(ok)getAnalytics(app);}).catch(()=>console.warn('Analytics unavailable'));
  if(env.VITE_FIREBASE_APPCHECK_SITE_KEY) initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider(env.VITE_FIREBASE_APPCHECK_SITE_KEY),isTokenAutoRefreshEnabled:true});
  auth=getAuth(app); db=getFirestore(app);
  if(env.DEV && env.VITE_FIREBASE_USE_EMULATORS==='true'){
