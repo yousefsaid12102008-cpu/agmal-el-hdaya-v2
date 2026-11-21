@@ -73,6 +73,6 @@ function sessionView(profile){
  document.querySelector('#logout').onclick=()=>run(logout);
  document.querySelector('#menu').onclick=e=>{const collapsed=document.querySelector('.workspace').classList.toggle('collapsed');e.target.setAttribute('aria-expanded',String(!collapsed));};
 }
-window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts'].includes(location.hash)||document.querySelector('.entry'))authView();});
+window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts','#preview/products','#preview/invoice'].includes(location.hash)||document.querySelector('.entry'))authView();});
 authView();
 watchAuth(async user=>{unwatch();if(!user){authView();return;}sessionView(null);try{unwatch=watchProfile(user.uid,sessionView,()=>{sessionView(null);document.querySelector('#status').textContent='تعذر تحميل حالة الحساب. لا توجد صلاحيات تشغيلية متاحة.';});}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}});
