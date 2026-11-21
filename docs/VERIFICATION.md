@@ -33,3 +33,11 @@ This revision is packaged as a source ZIP for the review branch. Expanded reposi
 Five Firestore rules suites and one callable integration suite pass on demo-only Firestore/Auth/Functions emulators. Coverage includes anonymous denial, own-profile status reads, owner-only user/audit reads, blocked client profile writes and self-promotion, closed operational collections, requested-role preservation, duplicate registration, invalid financial permission denial, owner approval, suspension and second-client real-time suspension updates. Production App Check remains untested, deliberately disabled only in emulators. Functions region uses ERP_FUNCTION_REGION because the FUNCTION_ prefix is reserved.
 
 Node 22 and Java 21+ are required for emulator checks. Production npm audit reports zero vulnerabilities. The development Firebase CLI dependency tree currently reports 14 moderate advisories; these must be reviewed before broader tooling use. No claim that all dependencies are vulnerability-free.
+
+## Owner approvals: local implementation, not published
+
+Pending-account review uses an owner-only Firestore list and the reviewUser callable. Decisions include expectedStatus=pending and fail if another session already handled the request. The UI shows registered email and verification as recorded at signup, never treats the display name as identity proof, defaults all permissions off and confirms the exact target/role/permissions. Server registration obtains those identity display fields from the authenticated token.
+
+A real browser emulator workflow passes approval, rejection, cancel/no-write, exact permission grants, two audit records, real-time stale closure, suspended-owner removal, staff navigation denial and 320/390px overflow checks. Desktop/mobile and confirmation screenshots are awaiting owner visual review. Production login, App Check and live backend acceptance remain untested.
+
+The isolated owner bootstrap rehearsal passes loopback/demo gating, explicit UID match, Auth verification, pending profile, concurrent attempt exclusion and single owner/marker/audit assertions. It refuses real Firebase projects by design.
