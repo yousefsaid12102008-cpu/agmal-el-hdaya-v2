@@ -13,14 +13,19 @@
     "test:products-preview": "node tests/products.ui.mjs",
     "test:labels-preview": "node tests/labels.ui.mjs",
     "test:composer-preview": "node tests/composer.ui.mjs",
-    "test:review-performance": "node tests/review-performance.mjs"
+    "test:review-performance": "node tests/review-performance.mjs",
+    "test:composer-expanded": "node tests/composer-expanded.ui.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@zxing/browser": "0.1.5",
+    "@zxing/library": "0.21.3",
     "firebase": "12.19.0",
+    "html2canvas": "1.4.1",
     "jsbarcode": "3.12.3",
+    "jspdf": "4.2.1",
     "qrcode": "1.5.4"
   },
   "devDependencies": {
