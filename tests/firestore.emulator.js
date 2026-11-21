@@ -18,7 +18,7 @@ before(async()=>{
  });
 });
 after(async()=>env?.cleanup());
-const dbFor=uid=>uid?env.authenticatedContext(uid,{email_verified:true,email:uid+'@example.test'}).firestore():env.unauthenticatedContext().firestore();
+const dbFor=uid=>uid?env.authenticatedContext(uid,{email_verified:true,email:uid+'@example.test',auth_time:1000}).firestore():env.unauthenticatedContext().firestore();
 test('unauthenticated reads and writes are denied',async()=>{
  const db=dbFor();
  await assertFails(getDoc(doc(db,'users','customer')));
@@ -52,11 +52,15 @@ test('operational collections and unpaired client audit writes remain closed',as
  }
 });
 
-test('login activity is owner-readable and self-write-only with timestamp and strict fields',async()=>{
- const {serverTimestamp,Timestamp}=await import('firebase/firestore');const own=dbFor('employee'),ref=doc(own,'login_activity','employee');
- await assertSucceeds(setDoc(ref,{lastSignInAt:serverTimestamp(),deviceLabel:'iPhone · iOS',source:'client-reported'}));
- await assertFails(getDoc(ref));await assertSucceeds(getDoc(doc(dbFor('owner'),'login_activity','employee')));
- await assertFails(setDoc(doc(own,'login_activity','customer'),{lastSignInAt:serverTimestamp(),deviceLabel:'Fake',source:'client-reported'}));
- await assertFails(setDoc(ref,{lastSignInAt:Timestamp.fromMillis(1),deviceLabel:'Fake',source:'client-reported'}));
- await assertFails(setDoc(ref,{lastSignInAt:serverTimestamp(),deviceLabel:'Fake',source:'client-reported',role:'owner'}));
+test('login history is append-only, token-time-bound and owner-readable only',async()=>{
+ const {serverTimestamp,Timestamp}=await import('firebase/firestore');const own=dbFor('employee'),ref=doc(own,'login_events','employee','events','1000');
+ const data={authTime:1000,recordedAt:serverTimestamp(),deviceLabel:'iPhone · iOS',source:'client-reported'};
+ await assertSucceeds(setDoc(ref,data));await assertFails(setDoc(ref,data));await assertFails(deleteDoc(ref));
+ await assertFails(getDoc(ref));await assertSucceeds(getDoc(doc(dbFor('owner'),'login_events','employee','events','1000')));
+ await assertSucceeds(getDocs(collection(dbFor('owner'),'login_events','employee','events')));await assertFails(getDocs(collection(own,'login_events','employee','events')));
+ await assertFails(setDoc(doc(own,'login_events','customer','events','1000'),data));
+ await assertFails(setDoc(doc(own,'login_events','employee','events','1001'),{...data,authTime:1001}));
+ await assertFails(setDoc(doc(dbFor('pending'),'login_events','pending','events','1000'),{...data,recordedAt:Timestamp.fromMillis(1)}));
+ await assertFails(setDoc(doc(dbFor('pending'),'login_events','pending','events','1000'),{...data,role:'owner'}));
+ await assertFails(setDoc(doc(own,'login_activity','employee'),{lastSignInAt:serverTimestamp(),deviceLabel:'Fake',source:'client-reported'}));
 });
