@@ -53,11 +53,15 @@ service cloud.firestore {
   match /roles/{role} {allow read: if owner(); allow write: if false;}
   match /permissions/{permission} {allow read: if owner(); allow write: if false;}
   match /{document=**} {allow read,write: if false;}
-  match /login_activity/{uid} {
-   allow get: if owner();
-   allow list: if owner();
-   allow create,update: if signedIn() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['lastSignInAt','deviceLabel','source']) && request.resource.data.keys().hasAll(['lastSignInAt','deviceLabel','source']) && request.resource.data.lastSignInAt == request.time && request.resource.data.deviceLabel is string && request.resource.data.deviceLabel.size() <= 120 && request.resource.data.source == 'client-reported';
-   allow delete: if false;
+  match /login_activity/{uid} {allow read: if owner(); allow write: if false;}
+  match /login_events/{uid}/events/{event} {
+   allow read: if owner();
+   allow create: if signedIn() && request.auth.uid == uid && event == string(request.auth.token.auth_time) &&
+    request.resource.data.keys().hasOnly(['authTime','recordedAt','deviceLabel','source']) &&
+    request.resource.data.keys().hasAll(['authTime','recordedAt','deviceLabel','source']) &&
+    request.resource.data.authTime == request.auth.token.auth_time && request.resource.data.recordedAt == request.time &&
+    request.resource.data.deviceLabel is string && request.resource.data.deviceLabel.size() <= 120 && request.resource.data.source == 'client-reported';
+   allow update,delete: if false;
   }
  }
 }
