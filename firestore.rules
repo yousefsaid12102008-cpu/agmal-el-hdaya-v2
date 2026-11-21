@@ -2,12 +2,56 @@ rules_version = '2';
 service cloud.firestore {
  match /databases/{database}/documents {
   function signedIn(){return request.auth != null;}
-  function owner(){return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';}
-  match /users/{uid} {allow get: if signedIn() && (request.auth.uid == uid || owner()); allow list: if owner(); allow write: if false;}
+  function owner(){return signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';}
+  function summary(p){return {'status':p.status,'role':p.role,'permissions':p.permissions};}
+  function allowed(p){
+   return p.role in ['customer','employee','cashier'] && p.permissions is list && p.permissions.size() == p.permissions.toSet().size() &&
+    ((p.role == 'customer' && p.permissions.hasOnly(['view_own_purchases','view_own_orders','view_own_account'])) ||
+     (p.role in ['employee','cashier'] && p.permissions.hasOnly(['view_sales','create_sales','view_inventory','manage_inventory','manage_customers','view_orders','manage_orders'])));
+  }
+  function auditMatches(uid,before,after,action){
+   let a=getAfter(/databases/$(database)/documents/audit_logs/$(after.lastAuditId)).data;
+   return after.lastAuditId is string && after.lastAuditId.size() > 0 && after.lastAuditId.size() <= 128 &&
+    !exists(/databases/$(database)/documents/audit_logs/$(after.lastAuditId)) &&
+    a.keys().hasOnly(['actorUid','action','targetUid','before','after','createdAt']) &&
+    a.actorUid == request.auth.uid && a.targetUid == uid && a.action == action && a.before == before &&
+    a.after == summary(after) && a.createdAt == request.time;
+  }
+  function register(uid){
+   let p=request.resource.data;
+   return signedIn() && request.auth.uid == uid &&
+    p.keys().hasAll(['uid','displayName','email','emailVerified','role','requestedRole','status','permissions','createdAt','updatedAt','lastAuditId']) &&
+    p.keys().hasOnly(['uid','displayName','email','emailVerified','role','requestedRole','status','permissions','createdAt','updatedAt','lastAuditId']) &&
+    p.uid == uid && p.displayName is string && p.displayName.size() <= 120 &&
+    p.email == request.auth.token.email && p.emailVerified == request.auth.token.email_verified &&
+    p.requestedRole in ['customer','employee'] && p.role == 'customer' && p.status == 'pending' && p.permissions == [] &&
+    p.createdAt == request.time && p.updatedAt == request.time && auditMatches(uid,null,p,'user.requested');
+  }
+  function review(uid){
+   let old=resource.data; let p=request.resource.data;
+   return owner() && request.auth.uid != uid && old.role != 'owner' && allowed(p) &&
+    p.diff(old).affectedKeys().hasOnly(['status','role','permissions','updatedAt','reviewedBy','lastAuditId']) &&
+    ((old.status == 'pending' && p.status in ['active','rejected']) || (old.status == 'active' && p.status == 'suspended') || (old.status == 'suspended' && p.status == 'active')) &&
+    p.updatedAt == request.time && p.reviewedBy == request.auth.uid &&
+    auditMatches(uid,summary(old),p,'user.reviewed');
+  }
+  match /users/{uid} {
+   allow get: if signedIn() && (request.auth.uid == uid || owner());
+   allow list: if owner();
+   allow create: if register(uid);
+   allow update: if review(uid);
+   allow delete: if false;
+  }
+  match /audit_logs/{entry} {
+   allow read: if owner();
+   allow create: if signedIn() && request.resource.data.targetUid is string &&
+    getAfter(/databases/$(database)/documents/users/$(request.resource.data.targetUid)).data.lastAuditId == entry &&
+    ((!exists(/databases/$(database)/documents/users/$(request.resource.data.targetUid)) && request.resource.data.action == 'user.requested' && request.resource.data.targetUid == request.auth.uid) ||
+     (owner() && exists(/databases/$(database)/documents/users/$(request.resource.data.targetUid)) && get(/databases/$(database)/documents/users/$(request.resource.data.targetUid)).data.get('lastAuditId','') != entry && request.resource.data.action == 'user.reviewed'));
+   allow update,delete: if false;
+  }
   match /roles/{role} {allow read: if owner(); allow write: if false;}
   match /permissions/{permission} {allow read: if owner(); allow write: if false;}
-  match /audit_logs/{entry} {allow read: if owner(); allow write: if false;}
-  // All operational data remains closed until its module passes acceptance tests.
   match /{document=**} {allow read,write: if false;}
  }
 }
