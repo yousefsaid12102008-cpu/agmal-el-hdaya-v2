@@ -10,3 +10,35 @@
 @media(max-width:700px){.entry-v5:before{background-image:linear-gradient(0deg,#080909 0%,#080909dd 52%,#08090910 90%),var(--login-scene-image);background-position:center top;background-size:100% 100%,auto 470px;background-repeat:no-repeat}.entry-v5 .story{min-height:260px}.entry-v5 .entry-form{background:#08090955}}
 
 .account-type{border:1px solid #8c6c3c66;border-radius:9px;margin:12px 0;padding:9px 12px;display:flex;gap:24px;flex-wrap:wrap}.account-type legend{font-size:10px;color:#e3c48f;padding:0 6px}.entry-v5 .account-type label{display:flex;gap:7px;align-items:center;margin:0;font-size:11px}.account-type input{width:15px;min-height:15px;height:15px;accent-color:#d9ae65;padding:0}.account-type p{flex-basis:100%;font-size:9px;line-height:1.9;margin:0;color:#b7ab96}
+
+/* Real theme control. Keep the approved photographic backdrop in both themes. */
+.entry-v5 .edition.theme-toggle{min-height:40px;min-width:112px;gap:7px;cursor:pointer;justify-content:center;white-space:nowrap}
+.entry-v5 .edition.theme-toggle:after{content:none}
+.entry-v5 .theme-toggle:focus-visible{outline:3px solid #f4cf88;outline-offset:4px}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="light"] .entry-v5{color:#382a16;background:#eee5d7;--text:#382a16;--muted:#685b48;--gold:#825b20;--gold-dark:#946b2b;--line:#d3bea0}
+html[data-theme="light"] .entry-v5 .story-top{background:linear-gradient(125deg,#fffcf6f5,#f0e4d3ed);border-color:#b99a67;box-shadow:0 5px 22px #34210830}
+html[data-theme="light"] .entry-v5 .brand{color:#6e4b17}
+html[data-theme="light"] .entry-v5 .brand small{color:#705e43}
+html[data-theme="light"] .entry-v5 .edition.theme-toggle{background:#fff9ef;color:#6e4b17;border:1px solid #a17b3d}
+html[data-theme="light"] .entry-v5 .login-panel{background:linear-gradient(135deg,#fffdf9f5,#f8f0e3f5 80%,#e7d4acf5);border-color:#a17b3d;box-shadow:0 20px 55px #25160066,inset 0 1px 2px #fff}
+html[data-theme="light"] .entry-v5 .login-panel h2{color:#684613;text-shadow:none}
+html[data-theme="light"] .entry-v5 .eyebrow,html[data-theme="light"] .entry-v5 label,html[data-theme="light"] .entry-v5 .form-intro,html[data-theme="light"] .entry-v5 .switch-copy{color:#55452e}
+html[data-theme="light"] .entry-v5 .mode-row{border-color:#c8af86}
+html[data-theme="light"] .entry-v5 .mode-row button{color:#6e604d}
+html[data-theme="light"] .entry-v5 .mode-row button.chosen{color:#79521b;border-color:#90651f}
+html[data-theme="light"] .entry-v5 .input-wrap{background:#fffdf9;border-color:#b5a284;box-shadow:inset 0 1px 3px #5e472b10}
+html[data-theme="light"] .entry-v5 input{color:#382a16;background:transparent}
+html[data-theme="light"] .entry-v5 input::placeholder{color:#7c725f}
+html[data-theme="light"] .entry-v5 .input-icon,html[data-theme="light"] .entry-v5 .show-password,html[data-theme="light"] .entry-v5 .text-button,html[data-theme="light"] .entry-v5 .crown-badge{color:#80591f}
+html[data-theme="light"] .entry-v5 .setup-notice{background:#eee3cc;border-color:#bd9b61;color:#67491e}
+html[data-theme="light"] .entry-v5 .setup-notice strong,html[data-theme="light"] .entry-v5 .setup-notice p{color:#67491e}
+html[data-theme="light"] .entry-v5 .secondary{background:#fff9ee;color:#5e4827;border-color:#c0a778}
+html[data-theme="light"] .entry-v5 .divider{color:#705f46}
+html[data-theme="light"] .entry-v5 .divider:before,html[data-theme="light"] .entry-v5 .divider:after{background:#ccb68e}
+html[data-theme="light"] .entry-v5 .panel-foot,html[data-theme="light"] .entry-v5 .account-type p,html[data-theme="light"] .entry-v5 .account-type legend{color:#6d5735}
+html[data-theme="light"] .entry-v5 .story footer{background:#faf4e8f5;border-color:#b99a67;color:#715932}
+html[data-theme="light"] .entry-v5 .footer-contact address,html[data-theme="light"] .entry-v5 .footer-contact a{color:#694b1b}
+@media(max-width:700px){html[data-theme="light"] .entry-v5 .entry-form{background:#eee5d7dd}html[data-theme="light"] .entry-v5:before{background-image:linear-gradient(0deg,#eee5d7 0%,#eee5d7 42%,#eee5d700 78%),var(--login-scene-image)}.entry-v5 .edition.theme-toggle{min-width:98px;min-height:40px;font-size:9px}}
+html[data-theme="light"] .entry-v5 .shop-logo-small{mix-blend-mode:normal;background:#17120c;border-radius:8px;padding:3px}
+@media(max-width:700px){html[data-theme="light"] .entry-v5 .store-return{color:#674516}html[data-theme="light"] .entry-v5 .pill{background:#fff8ec;color:#684714}}
