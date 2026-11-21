@@ -1,0 +1,60 @@
+import {test,after} from 'node:test';
+import assert from 'node:assert/strict';
+import {initializeApp,deleteApp} from 'firebase/app';
+import {getAuth,connectAuthEmulator,createUserWithEmailAndPassword,signInWithEmailAndPassword} from 'firebase/auth';
+import {getFunctions,connectFunctionsEmulator,httpsCallable} from 'firebase/functions';
+import {getFirestore as clientFirestore,connectFirestoreEmulator,doc,onSnapshot} from 'firebase/firestore';
+import {createRequire} from 'node:module';
+const requireFunctions=createRequire(new URL('../functions/package.json',import.meta.url));
+const {initializeApp:adminApp,deleteApp:deleteAdmin}=requireFunctions('firebase-admin/app');
+const {getFirestore}=requireFunctions('firebase-admin/firestore');
+const projectId='demo-agaml-phase1';
+if(!process.env.FIRESTORE_EMULATOR_HOST||!process.env.FIREBASE_AUTH_EMULATOR_HOST)throw new Error('Emulators required');
+const admin=adminApp({projectId});const db=getFirestore(admin);const apps=[];
+function client(name){
+ const app=initializeApp({projectId,apiKey:'demo-key',appId:'demo-app'},name);apps.push(app);
+ const auth=getAuth(app);connectAuthEmulator(auth,'http://'+process.env.FIREBASE_AUTH_EMULATOR_HOST,{disableWarnings:true});
+ const functions=getFunctions(app,'me-central2');connectFunctionsEmulator(functions,'127.0.0.1',5101);
+ const db=clientFirestore(app);connectFirestoreEmulator(db,'127.0.0.1',8180);
+ return {auth,db,register:httpsCallable(functions,'registerProfile'),review:httpsCallable(functions,'reviewUser')};
+}
+after(async()=>{await Promise.all(apps.map(deleteApp));await deleteAdmin(admin);});
+test('registration, approval, denial, suspension and audit callable integration',async()=>{
+ const stamp=Date.now();const guest=client('guest-'+stamp);
+ await assert.rejects(guest.register({requestedRole:'customer'}),e=>e.code==='functions/unauthenticated');
+ const employee=client('employee-'+stamp);
+ const employeeAuth=await createUserWithEmailAndPassword(employee.auth,`employee-${stamp}@example.test`,'Local-emulator-only-2026!');
+ const uid=employeeAuth.user.uid;
+ await assert.rejects(employee.register({requestedRole:'owner'}),e=>e.code==='functions/invalid-argument');
+ await employee.register({requestedRole:'employee'});
+ let p=(await db.doc(`users/${uid}`).get()).data();
+ assert.equal(p.requestedRole,'employee');assert.equal(p.role,'customer');assert.equal(p.status,'pending');assert.deepEqual(p.permissions,[]);
+ assert.ok(p.createdAt?.toMillis());
+ const before=(await db.collection('audit_logs').where('targetUid','==',uid).get()).size;
+ await Promise.all([employee.register({requestedRole:'customer'}),employee.register({requestedRole:'owner'}).catch(()=>{})]);
+ assert.equal((await db.collection('audit_logs').where('targetUid','==',uid).get()).size,before);
+ p=(await db.doc(`users/${uid}`).get()).data();assert.equal(p.requestedRole,'employee');
+ const customer=client('customer-'+stamp);const c=await createUserWithEmailAndPassword(customer.auth,`customer-${stamp}@example.test`,'Local-emulator-only-2026!');
+ await customer.register({requestedRole:'customer'});assert.equal((await db.doc(`users/${c.user.uid}`).get()).data().requestedRole,'customer');
+ await assert.rejects(employee.review({uid:c.user.uid,status:'active',role:'customer',permissions:[]}),e=>e.code==='functions/permission-denied');
+ const owner=client('owner-'+stamp);const o=await createUserWithEmailAndPassword(owner.auth,`owner-${stamp}@example.test`,'Local-emulator-only-2026!');
+ // Test-only privileged seed. Never use this as a production bootstrap procedure.
+ await db.doc(`users/${o.user.uid}`).set({uid:o.user.uid,role:'owner',status:'active',permissions:[]});
+ await assert.rejects(owner.review({uid,status:'active',role:'employee',permissions:['manage_treasury']}),e=>e.code==='functions/invalid-argument');
+ await assert.rejects(owner.review({uid:o.user.uid,status:'active',role:'employee',permissions:[]}),e=>e.code==='functions/invalid-argument');
+ await owner.review({uid,status:'active',role:'employee',permissions:['view_inventory']});
+ p=(await db.doc(`users/${uid}`).get()).data();assert.equal(p.status,'active');assert.equal(p.role,'employee');assert.equal(p.reviewedBy,o.user.uid);
+ const second=client('second-device-'+stamp);await signInWithEmailAndPassword(second.auth,`employee-${stamp}@example.test`,'Local-emulator-only-2026!');
+ assert.equal(second.auth.currentUser.uid,uid);
+ const observedSuspension=new Promise((resolve,reject)=>{
+  const timeout=setTimeout(()=>{stop();reject(new Error('Second-device suspension update timed out'));},10000);
+  const stop=onSnapshot(doc(second.db,'users',uid),snapshot=>{if(snapshot.data()?.status==='suspended'){clearTimeout(timeout);stop();resolve(snapshot.data());}},reject);
+ });
+ await owner.review({uid,status:'suspended',role:'employee',permissions:[]});
+ assert.equal((await observedSuspension).status,'suspended');
+ assert.equal((await db.doc(`users/${uid}`).get()).data().status,'suspended');
+ await db.doc(`users/${o.user.uid}`).update({status:'suspended'});
+ await assert.rejects(owner.review({uid:c.user.uid,status:'active',role:'customer',permissions:[]}),e=>e.code==='functions/permission-denied');
+ const audit=await db.collection('audit_logs').where('targetUid','==',uid).get();
+ assert.equal(audit.size,3);assert.ok(audit.docs.every(d=>d.data().createdAt?.toMillis()));
+});
