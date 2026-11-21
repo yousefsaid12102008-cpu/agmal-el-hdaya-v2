@@ -30,3 +30,9 @@ Tax mode/rates, legal business identifiers, discount authority, credit-sale limi
 ## Checks performed
 
 24 unit tests pass across Phase 1 policy/device tests and initial invoice/inventory math tests. Browser preview loads without page errors; 390px layout has no page overflow; A4 and thermal selection render; printed output was inspected as pixels. This is not a live financial, stock, tax, hardware or multi-device acceptance test.
+
+## Products, units and warehouses review UI
+
+`#preview/products` has the same development/review-build gate. Product list filtering and per-row read-only cards use clearly labeled synthetic examples. Units and warehouse tabs are review layouts, not a production catalog. Actual product totals, valuation and alerts are not fabricated. All buttons that would commit operational data remain disabled or absent. No preview data is persisted, locally or in Firestore.
+
+Browser checks cover correct row/card binding, product search/category filtering, navigation, and no page overflow at 320px and 390px. Desktop, mobile and card screenshots were inspected. These checks do not prove business write rules, barcode uniqueness, concurrent inventory accounting, fractional units, valuation or operational readiness. Those are not implemented here.
