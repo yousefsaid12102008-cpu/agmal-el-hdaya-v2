@@ -12,6 +12,6 @@ if(configured){
  if(env.VITE_FIREBASE_APPCHECK_SITE_KEY) initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider(env.VITE_FIREBASE_APPCHECK_SITE_KEY),isTokenAutoRefreshEnabled:true});
  auth=getAuth(app); db=getFirestore(app); functions=getFunctions(app,env.VITE_FIREBASE_REGION);
  if(env.DEV && env.VITE_FIREBASE_USE_EMULATORS==='true'){
-  connectAuthEmulator(auth,'http://127.0.0.1:9199'); connectFirestoreEmulator(db,'127.0.0.1',8180); connectFunctionsEmulator(functions,'127.0.0.1',5101);
+  connectAuthEmulator(auth,'http://127.0.0.1:9199',{disableWarnings:true}); connectFirestoreEmulator(db,'127.0.0.1',8180); connectFunctionsEmulator(functions,'127.0.0.1',5101);
  }
 }
