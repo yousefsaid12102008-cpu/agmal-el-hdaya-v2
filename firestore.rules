@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function signedIn(){return request.auth != null;}
+  function owner(){return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';}
+  match /users/{uid} {allow get: if signedIn() && (request.auth.uid == uid || owner()); allow list: if owner(); allow write: if false;}
+  match /roles/{role} {allow read: if owner(); allow write: if false;}
+  match /permissions/{permission} {allow read: if owner(); allow write: if false;}
+  match /audit_logs/{entry} {allow read: if owner(); allow write: if false;}
+  // All operational data remains closed until its module passes acceptance tests.
+  match /{document=**} {allow read,write: if false;}
+ }
+}
