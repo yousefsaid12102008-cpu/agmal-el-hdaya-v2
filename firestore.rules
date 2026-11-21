@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
  match /databases/{database}/documents {
   function signedIn(){return request.auth != null;}
-  function owner(){return signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';}
+  function owner(){return signedIn() && request.auth.token.email_verified == true && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';}
   function summary(p){return {'status':p.status,'role':p.role,'permissions':p.permissions};}
   function allowed(p){
    return p.role in ['customer','employee','cashier'] && p.permissions is list && p.permissions.size() == p.permissions.toSet().size() &&
@@ -31,7 +31,7 @@ service cloud.firestore {
    let old=resource.data; let p=request.resource.data;
    return owner() && request.auth.uid != uid && old.role != 'owner' && allowed(p) &&
     p.diff(old).affectedKeys().hasOnly(['status','role','permissions','updatedAt','reviewedBy','lastAuditId']) &&
-    ((old.status == 'pending' && p.status in ['active','rejected']) || (old.status == 'active' && p.status == 'suspended') || (old.status == 'suspended' && p.status == 'active')) &&
+    ((old.status == 'pending' && p.status in ['active','rejected'] && (p.status != 'active' || old.emailVerified == true)) || (old.status == 'active' && p.status == 'suspended') || (old.status == 'suspended' && p.status == 'active')) &&
     p.updatedAt == request.time && p.reviewedBy == request.auth.uid &&
     auditMatches(uid,summary(old),p,'user.reviewed');
   }
@@ -39,7 +39,7 @@ service cloud.firestore {
    allow get: if signedIn() && (request.auth.uid == uid || owner());
    allow list: if owner();
    allow create: if register(uid);
-   allow update: if review(uid);
+   allow update: if review(uid) || (signedIn() && request.auth.uid == uid && request.auth.token.email_verified == true && request.resource.data.email == request.auth.token.email && resource.data.emailVerified == false && request.resource.data.emailVerified == true && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['emailVerified','updatedAt']) && request.resource.data.updatedAt == request.time);
    allow delete: if false;
   }
   match /audit_logs/{entry} {
@@ -53,5 +53,11 @@ service cloud.firestore {
   match /roles/{role} {allow read: if owner(); allow write: if false;}
   match /permissions/{permission} {allow read: if owner(); allow write: if false;}
   match /{document=**} {allow read,write: if false;}
+  match /login_activity/{uid} {
+   allow get: if owner();
+   allow list: if owner();
+   allow create,update: if signedIn() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['lastSignInAt','deviceLabel','source']) && request.resource.data.keys().hasAll(['lastSignInAt','deviceLabel','source']) && request.resource.data.lastSignInAt == request.time && request.resource.data.deviceLabel is string && request.resource.data.deviceLabel.size() <= 120 && request.resource.data.source == 'client-reported';
+   allow delete: if false;
+  }
  }
 }
