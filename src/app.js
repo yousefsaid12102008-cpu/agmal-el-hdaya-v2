@@ -1,6 +1,3 @@
-import {renderLabelsPreview} from './pages/labels-preview.js';
-import {renderProductsPreview} from './pages/products-preview.js';
-import {renderInvoicePreview} from './pages/invoice-preview.js';
 import {renderApprovals} from './pages/approvals.js';
 import {renderDashboard} from './pages/dashboard.js';
 import {designPreviewRole} from './router.js';
@@ -33,11 +30,13 @@ function icon(name){
  const paths={sales:'M5 4h14v16H5z M8 8h8 M8 12h8 M8 16h4',stock:'m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4 M12 11v10 M7 5l10 4',money:'M3 6h18v13H3z M3 10h18 M7 15h3 M16 3v3',print:'M7 8V3h10v5 M7 17H3V8h18v9h-4 M7 14h10v7H7z M17 11h1',lock:'M6 10h12v11H6z M8 10V7a4 4 0 0 1 8 0v3 M12 14v3',mail:'M3 5h18v14H3z m0 0 9 8 9-8',eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0',shield:'m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z m-4 9 3 3 5-6',link:'m9 15 6-6 M7 10l-2 2a4 4 0 0 0 6 6l2-2 M11 8l2-2a4 4 0 0 1 6 6l-2 2'};
  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name]||paths.lock}"/></svg>`;
 }
+function reviewView(load,name){let cancelled=false,stop=()=>{};root.innerHTML='<main class="workspace" role="status">جار تحميل شاشة المراجعة...</main>';load().then(module=>{if(!cancelled)stop=module[name](root);}).catch(()=>{if(!cancelled)root.textContent='تعذر تحميل المعاينة. حدّث الصفحة وحاول مجددًا.';});return()=>{cancelled=true;stop();};}
 function authView(){
  viewStop();viewStop=()=>{};ownerPage='dashboard';
- if(location.hash==='#preview/labels'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderLabelsPreview(root);return;}
- if(location.hash==='#preview/products'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderProductsPreview(root);return;}
- if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderInvoicePreview(root);return;}
+ if(location.hash==='#preview/composer'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=reviewView(()=>import('./pages/composer-preview.js'),'renderComposerPreview');return;}
+ if(location.hash==='#preview/labels'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=reviewView(()=>import('./pages/labels-preview.js'),'renderLabelsPreview');return;}
+ if(location.hash==='#preview/products'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=reviewView(()=>import('./pages/products-preview.js'),'renderProductsPreview');return;}
+ if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=reviewView(()=>import('./pages/invoice-preview.js'),'renderInvoicePreview');return;}
  if(location.hash==='#preview/accounts'&&!configured){
   const examples=[{uid:'example-employee',displayName:'طلب موظف توضيحي',email:'employee@example.test',emailVerified:false,requestedRole:'employee'},{uid:'example-customer',displayName:'طلب عميل توضيحي',email:'customer@example.test',emailVerified:false,requestedRole:'customer'}];
   viewStop=renderApprovals(root,{preview:true,watch:next=>{queueMicrotask(()=>next(examples));return ()=>{};},onBack:()=>location.hash='#team',onLogout:()=>location.hash='#team'});return;
@@ -75,6 +74,6 @@ function sessionView(profile){
  document.querySelector('#logout').onclick=()=>run(logout);
  document.querySelector('#menu').onclick=e=>{const collapsed=document.querySelector('.workspace').classList.toggle('collapsed');e.target.setAttribute('aria-expanded',String(!collapsed));};
 }
-window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts','#preview/products','#preview/invoice','#preview/labels'].includes(location.hash)||document.querySelector('.entry'))authView();});
+window.addEventListener('hashchange',()=>{if(designPreviewRole()||['','#team','#store','#preview/accounts','#preview/products','#preview/invoice','#preview/labels','#preview/composer'].includes(location.hash)||document.querySelector('.entry'))authView();});
 authView();
-watchAuth(async user=>{unwatch();if(!user){authView();return;}sessionView(null);try{unwatch=watchProfile(user.uid,sessionView,()=>{sessionView(null);document.querySelector('#status').textContent='تعذر تحميل حالة الحساب. لا توجد صلاحيات تشغيلية متاحة.';});}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}});
+watchAuth(async user=>{unwatch();if(!user){if(!root.querySelector('.entry'))authView();return;}sessionView(null);try{unwatch=watchProfile(user.uid,sessionView,()=>{sessionView(null);document.querySelector('#status').textContent='تعذر تحميل حالة الحساب. لا توجد صلاحيات تشغيلية متاحة.';});}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}});
