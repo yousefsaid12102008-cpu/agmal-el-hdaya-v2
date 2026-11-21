@@ -1,0 +1,20 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {isOwner,hasPermission,validateDecision,PERMISSIONS} from '../functions/src/policy.js';
+test('pending users have no permissions, even if data claims owner',()=>{assert.equal(isOwner({role:'owner',status:'pending'}),false);assert.equal(hasPermission({role:'owner',status:'pending'},'view_sales'),false);});
+test('suspended and rejected users have no permissions',()=>{for(const status of ['suspended','rejected'])assert.equal(hasPermission({role:'owner',status},'manage_treasury'),false);});
+test('display name and email do not grant owner',()=>assert.equal(isOwner({displayName:'بشمهندس يوسف',email:'owner@example.com',status:'active',role:'employee'}),false));
+test('unknown permissions denied for owners too',()=>assert.equal(hasPermission({role:'owner',status:'active'},'arbitrary'),false));
+test('active owner gets all declared permissions',()=>{for(const p of PERMISSIONS)assert.equal(hasPermission({role:'owner',status:'active'},p),true);});
+test('employee permissions are explicit',()=>{const p={role:'employee',status:'active',permissions:['view_sales']};assert.equal(hasPermission(p,'view_sales'),true);assert.equal(hasPermission(p,'manage_prices'),false);});
+test('backups remain owner-only',()=>assert.equal(hasPermission({role:'admin',status:'active',permissions:['manage_backup']},'manage_backup'),false));
+const valid={uid:'target',status:'active',role:'employee',permissions:['view_sales']};
+test('valid approval accepted',()=>assert.deepEqual(validateDecision(valid,'actor'),valid));
+test('self approval blocked',()=>assert.throws(()=>validateDecision(valid,'target')));
+test('owner promotion blocked',()=>assert.throws(()=>validateDecision({...valid,role:'owner'},'actor')));
+test('unknown and duplicate permissions blocked',()=>{assert.throws(()=>validateDecision({...valid,permissions:['fake']},'actor'));assert.throws(()=>validateDecision({...valid,permissions:['view_sales','view_sales']},'actor'));});
+test('invalid paths and states blocked',()=>{assert.throws(()=>validateDecision({...valid,uid:'users/a'},'actor'));assert.throws(()=>validateDecision({...valid,status:'pending'},'actor'));});
+
+test('customer cannot gain staff or finance permission through stored data',()=>{for(const permission of ['view_sales','view_reports','manage_treasury','manage_inventory'])assert.equal(hasPermission({role:'customer',status:'active',permissions:[permission]},permission),false);});
+test('employees cannot gain finance/settings privileges through stored data',()=>{for(const permission of ['view_reports','manage_treasury','manage_employees','export_data'])assert.equal(hasPermission({role:'employee',status:'active',permissions:[permission]},permission),false);});
+test('customer approval cannot carry staff permissions',()=>assert.throws(()=>validateDecision({...valid,role:'customer'},'actor')));
+test('customer approval accepts only own-account scope',()=>assert.equal(validateDecision({...valid,role:'customer',permissions:['view_own_purchases']},'actor').role,'customer'));
