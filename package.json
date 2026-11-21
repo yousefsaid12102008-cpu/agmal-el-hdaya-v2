@@ -11,7 +11,9 @@
     "test:invoice-preview": "node tests/invoice.ui.mjs",
     "test:emulators": "node scripts/test-emulators.mjs",
     "test:products-preview": "node tests/products.ui.mjs",
-    "test:labels-preview": "node tests/labels.ui.mjs"
+    "test:labels-preview": "node tests/labels.ui.mjs",
+    "test:composer-preview": "node tests/composer.ui.mjs",
+    "test:review-performance": "node tests/review-performance.mjs"
   },
   "keywords": [],
   "author": "",
