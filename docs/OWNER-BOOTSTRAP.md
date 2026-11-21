@@ -23,4 +23,4 @@ Status: emulator rehearsal only. No live owner account has been created or promo
 
 `tests/bootstrap.emulator.js` checks fail-closed project/UID/verification gates, missing profile, concurrent attempts, one owner, one marker, one audit event and refusal to run again. This rehearsal establishes behavior, not permission or readiness to promote a real account.
 
-Live deployment still requires separately approved Firebase changes, production App Check acceptance and the billing decision for Cloud Functions. Spark remains unchanged.
+The active application now uses Auth + Firestore transactions and rules on Spark, with no Cloud Functions requirement. A privileged first-owner operation is still necessary because clients must never grant owner. It may be performed by a separately approved administrative route without adding a paid runtime. This file supplies no live command. Live setup still requires exact UID approval, reviewed rules, production App Check acceptance and real account tests. Spark remains unchanged.
