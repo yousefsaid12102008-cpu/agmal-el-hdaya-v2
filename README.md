@@ -55,8 +55,14 @@ Project ownership/current setup, region, providers, App Check, owner bootstrap, 
 
 ## Not complete
 
-Live Google/email authentication, owner approval UI, secure owner bootstrap, live suspension/cross-device acceptance tests, real operational modules, financial ledger, backups/restore, deployment and final security review. Phase 1 is not complete while these foundation items remain unverified.
+Live Google/email authentication, live owner approval acceptance, production owner bootstrap, live suspension/cross-device acceptance tests, real operational modules, financial ledger, backups/restore, deployment and final security review. Phase 1 is not complete while these foundation items remain unverified.
 
 ## Static preview deployment
 
 The main branch serves a development-only static build on the existing GitHub Pages site. Login and signup remain disabled. The review branch carries expanded source work and must not be merged blindly over the Pages entry. File upload prefixes are reflected in the deployed asset references; keep JS/CSS/image names aligned when replacing a build. No operational backend is deployed.
+
+## Owner approval screen: awaiting visual review
+
+Local implementation uses real pending-profile listeners and the owner-only review callable, with explicit role/permission selection, confirmation, audit writes and stale-decision protection. All permissions begin off. It is not published or connected to live Firebase yet. `npm run test:emulators` now runs the bootstrap rehearsal, the six security/callable suites and a browser approval workflow. The workflow uses synthetic local accounts, checks cancellation/approval/rejection, audit, stale updates, owner suspension, staff denial and mobile layout.
+
+The first-owner procedure is emulator-only preparation. See `docs/OWNER-BOOTSTRAP.md`; no public owner-signup route or live promotion command exists.
