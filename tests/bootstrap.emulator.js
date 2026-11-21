@@ -1,0 +1,26 @@
+import {test,after} from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {prepareOwnerInEmulator} from '../scripts/owner-bootstrap-emulator.mjs';
+const require=createRequire(new URL('../functions/package.json',import.meta.url));
+const {initializeApp,deleteApp}=require('firebase-admin/app');const {getFirestore,FieldValue}=require('firebase-admin/firestore');const {getAuth}=require('firebase-admin/auth');
+if(process.env.GCLOUD_PROJECT!=='demo-agaml-phase1'||!process.env.FIRESTORE_EMULATOR_HOST||!process.env.FIREBASE_AUTH_EMULATOR_HOST)throw new Error('Demo emulators required');
+const app=initializeApp({projectId:'demo-agaml-phase1'}),db=getFirestore(app),auth=getAuth(app);
+after(()=>deleteApp(app));
+test('bootstrap rehearsal fails closed and initializes one owner atomically',async()=>{
+ const uid='bootstrap-owner-'+Date.now(),other=uid+'-other';
+ const args={db,auth,uid,confirmationUid:uid,projectId:'demo-agaml-phase1',serverTimestamp:()=>FieldValue.serverTimestamp()};
+ await assert.rejects(prepareOwnerInEmulator({...args,projectId:'agmal-el-hdaya-erp'}),/demo-project-required/);
+ await assert.rejects(prepareOwnerInEmulator({...args,confirmationUid:other}),/explicit-uid-confirmation-required/);
+ await auth.createUser({uid,email:uid+'@example.test',emailVerified:false});
+ await assert.rejects(prepareOwnerInEmulator(args),/verified-enabled-auth-account-required/);
+ await auth.updateUser(uid,{emailVerified:true});
+ await assert.rejects(prepareOwnerInEmulator(args),/pending-profile-required/);
+ await db.doc('users/'+uid).set({uid,email:uid+'@example.test',status:'pending',role:'customer',requestedRole:'customer',permissions:[]});
+ await auth.createUser({uid:other,email:other+'@example.test',emailVerified:true});await db.doc('users/'+other).set({uid:other,email:other+'@example.test',status:'pending',role:'customer',requestedRole:'employee',permissions:[]});
+ const results=await Promise.allSettled([prepareOwnerInEmulator(args),prepareOwnerInEmulator({...args,uid:other,confirmationUid:other})]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+ const owners=await db.collection('users').where('role','==','owner').get();assert.equal(owners.size,1);assert.equal(owners.docs[0].data().status,'active');
+ const marker=await db.doc('system_metadata/owner_bootstrap').get();assert.equal(marker.data().uid,owners.docs[0].id);
+ const logs=await db.collection('audit_logs').where('action','==','owner.bootstrap.rehearsal').get();assert.equal(logs.size,1);
+ await assert.rejects(prepareOwnerInEmulator(args),/owner-already-initialized/);
+});
