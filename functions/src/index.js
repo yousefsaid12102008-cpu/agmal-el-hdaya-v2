@@ -15,7 +15,7 @@ export const registerProfile=onCall(options,async request=>{
  await db.runTransaction(async tx=>{
   if((await tx.get(ref)).exists)return;
   const now=FieldValue.serverTimestamp();
-  tx.create(ref,{uid,displayName:'عميل جديد',role:'customer',requestedRole,status:'pending',permissions:[],createdAt:now,updatedAt:now});
+  tx.create(ref,{uid,displayName:typeof request.auth.token.name==='string'?request.auth.token.name.slice(0,120):'حساب جديد',email:typeof request.auth.token.email==='string'?request.auth.token.email.slice(0,254):null,emailVerified:request.auth.token.email_verified===true,role:'customer',requestedRole,status:'pending',permissions:[],createdAt:now,updatedAt:now});
   tx.create(audit,{actorUid:uid,action:'user.requested',targetUid:uid,before:null,after:{status:'pending',role:'customer',requestedRole,permissions:[]},createdAt:now});
  });
  return {ok:true};
@@ -28,6 +28,7 @@ export const reviewUser=onCall(options,async request=>{
   const actor=await tx.get(actorRef),target=await tx.get(targetRef);
   if(!isOwner(actor.data()))throw new HttpsError('permission-denied','Owner required.');
   if(!target.exists)throw new HttpsError('not-found','User not found.');
+  if(request.data?.expectedStatus!==undefined && (request.data.expectedStatus!=='pending'||target.data().status!=='pending'))throw new HttpsError('failed-precondition','Request already reviewed.');
   if(target.data().role==='owner')throw new HttpsError('permission-denied','Owner changes require a separate procedure.');
   const {uid,...after}=decision;
   tx.update(targetRef,{...after,updatedAt:FieldValue.serverTimestamp(),reviewedBy:actorUid});
