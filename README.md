@@ -39,7 +39,7 @@ The approved v17 Phase 1 build is live on GitHub Pages. Its main-branch release 
 
 The existing `agmal-el-hdaya-erp` project and `me-central2` database are retained on Spark. No second project, billing upgrade or payment is approved. Reviewed account/history rules were published during activation. Email/password and Google providers are enabled and the Pages hostname is authorized. The configured Enterprise App Check client obtained a production token; Firestore enforcement was enabled during activation. Authentication App Check remains unenforced. These are deployment checkpoints, not proof of end-to-end account acceptance.
 
-The exact first-owner account has not yet been bound or promoted. Owner signup/identity confirmation, controlled bootstrap and real owner/non-owner acceptance remain required. Google OAuth and password-reset email delivery still need real-account tests. Never put admin credentials, service-account keys or real customer data in this public repository. Use `.env.example` as a shape only and verify the actual existing web-app configuration privately.
+The exact first-owner account was bound to the authenticated owner and promoted through a separately approved guarded administrative transaction. Private identity and backup data are not stored here. Real owner/non-owner UI acceptance remains required. Google OAuth and password-reset email delivery still need real-account tests. Never put admin credentials, service-account keys or real customer data in this public repository. Use `.env.example` as a shape only and verify the actual existing web-app configuration privately.
 
 ## Free-plan bounds
 
@@ -58,13 +58,13 @@ Sources checked 21 November 2026:
 
 ## Scope still incomplete
 
-Real first-owner/non-owner acceptance, Google OAuth, password-reset delivery and production bootstrap remain incomplete. Live signup/login UI and an App Check token exchange were checked, but those do not replace account acceptance. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
+Real first-owner/non-owner acceptance, Google OAuth, password-reset delivery and real-account acceptance remain incomplete. Live signup/login UI and an App Check token exchange were checked, but those do not replace account acceptance. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
 
 ## Account management
 
 Verification email/resend/reload requires a verified token before ordinary account access. Owner-only pages include registered-profile count, paged account management, suspension/reactivation and registration/latest-login/device detail. The owner-only verification exception applies solely to the exact first-owner account after private identity binding, not to ordinary users.
 
-Full paged client login history replaces the older latest-only activity design. Browsers may hide exact phone models, and the UI never invents them. Account pages fetch at most 50 profiles plus their latest events; older profiles and history load on demand. No owner account has been promoted yet.
+Full paged client login history replaces the older latest-only activity design. Browsers may hide exact phone models, and the UI never invents them. Account pages fetch at most 50 profiles plus their latest events; older profiles and history load on demand. The one-time first-owner bootstrap completed, with marker and audit readback. Real user-side dashboard acceptance is still being checked.
 
 ## Login history on Spark
 
@@ -81,3 +81,5 @@ The existing linked Google Analytics web property is initialized only in product
 `#preview/products` shows product cards, units and warehouses. `#preview/invoice` shows A4 and 80mm invoice layouts. Both routes are development-only unless explicitly enabled with `VITE_REVIEW_PREVIEWS=true`. Examples are synthetic and clearly labeled, with no business writes or local stock persistence. Unit conversion and integer-money helpers are groundwork, not trusted operational issuance. See `docs/PHASE2-GROUNDWORK.md` for scope, limitations and unresolved requirements.
 
 Run `npm run test:products-preview` and `npm run test:invoice-preview` for their browser checks. The current unit suite has 24 passing tests. The production build still warns about a roughly 650KB JavaScript chunk before gzip.
+
+Review now includes a mobile-focused dashboard and `#preview/labels` for local QR/Code128 sample generation, per-product copy counts and A4 multi-label printing. Labels support name, optional price and short extra details; the fixed internal QR contains no price. Paper choice and real printer calibration remain pending. Run `npm run test:labels-preview`. No live label/product or invoice issuance workflow is enabled.
