@@ -1,48 +1,27 @@
-# Spark account-flow verification, 21 November 2026
+# Spark activation checkpoint, 21 November 2026
 
-Status: review source only, not deployed. Approved v16 static preview remains live. Phase 1 is not complete.
+Status: source updated and emulator-tested. The reviewed v16 static preview remains live pending final visual approval. Phase 1 is not complete.
 
-## Passed locally
+## Tests passed
 
-- 21 policy and signup-payload unit tests.
-- Production Vite build. A roughly 605 kB JS chunk triggers the existing bundle warning.
-- Auth + Firestore emulators only, fixed demo project. No Functions runtime.
-- Isolated owner-bootstrap rehearsal: loopback/demo/UID/email-verification gates, one owner, marker/audit, concurrent exclusion.
-- Six baseline/activity rules suites: anonymous denial, own-profile reads, owner-only user/audit reads, denied unsafe profile writes and closed operational data.
-- Real Auth-client Spark integration: email registration, duplicate/concurrent registration without duplicate audit, requested role preserved, no automatic permissions, owner review race with one winning decision, atomic audit, suspension propagation and suspended-owner denial.
-- Direct forged writes bypassing client validation: owner promotion, privileged requested role, extra fields, forged email/verification, unauthorized financial permissions, false audit actor/before-state, profile change without audit, audit modification, owner self-demotion. All denied.
-- Synthetic Google provider-token fixture: verified token metadata recorded, employee request remains pending without permissions. This is not a real Google OAuth acceptance test.
-- Real browser against emulators: owner approval/rejection, cancel writes nothing, exact permission grant, audit pair, stale dialog closure, suspended owner removed, employee denied owner navigation, 320/390px no overflow.
-- Browser email signup with employee request, actual pending profile, page reload/session persistence, logout and login again.
-- Desktop owner screen and mobile pending-state screenshots inspected as pixels.
+21 policy, signup-payload and device unit tests. Production Vite build. Bootstrap rehearsal and 7 Auth/Firestore rules/integration tests. Browser tests cover signup, token-backed email verification refresh, reload/logout/login, owner approval/rejection, exact permissions, audit, cancellation, stale state, suspension/reactivation, owner detail card and login history. Explore navigation works. Mobile 320/390px layout has no horizontal overflow.
 
-Expected permission-denied log entries are negative-test assertions, not ignored test failures.
+Negative tests deny self-promotion, privileged signup, forged email/verification, extra fields, unauthorized finance scope, profile changes without a paired audit, audit edits/deletes and suspended-owner access. Operational collections remain closed. Google token fixtures do not establish real Google OAuth acceptance.
 
-## Trust boundary
+## Login history
 
-Every client write remains untrusted. Firestore rules validate field allowlists, authenticated token email/verification, pending/empty initial state, allowed status transitions, immutable identity fields, role-specific permission scopes, owner authority and request-time timestamps. Profile and new audit must cross-reference each other through lastAuditId and getAfter; audit update/delete are denied. The browser cannot grant owner to anyone. Transactions reject stale review targets.
+One append-only event per Auth sign-in, keyed by token auth_time. Rules bind it to the current UID and authenticated sign-in time, enforce a server receipt timestamp and a strict field list, deny updates/deletes and allow only owners to read. Last login is read from the latest event, not a second write. Newest 50 events are shown with older-page loading. No backfill or automatic deletion. A manual cleanup is separate, not implemented or authorized by this source. Device labels are client-reported, not attestation of an exact phone model. The superseded latest-only login_activity collection is closed to writes.
 
-Registration display name is untrusted display text. Email verification is the authenticated token snapshot at registration, clearly labelled in the UI; it is not refreshed when the Auth account later changes. A verified display snapshot is not owner identity proof. Real email verification and provider behavior must be checked during production acceptance.
+This browser-driven event log is best-effort, not an authoritative Firebase authentication audit: a modified client can omit an event. An event that exists is token-bound; absence does not prove no login occurred. A duplicate sign-in within the same one-second Auth timestamp shares one event ID.
 
-The former callable path is no longer referenced by active Firebase configuration or services. Historical callable files are retained for comparison, not deployment. Emulator fixtures alone use Admin SDK, bypassing rules only for explicit test seeds and bootstrap rehearsal.
+## Live changes already made under activation approval
 
-## Not verified or enabled
+Existing project agmal-el-hdaya-erp remains on Spark, with no billing account, paid trial or new project. Email/password and Google providers enabled, Pages hostname authorized. Earlier tested rules published, with the new history rules still awaiting final publish. Supported score-based Enterprise/Fraud Defense key created for the production Pages hostname, provider registered in App Check with 1-hour TTL. No enforcement until a production token test succeeds. Standard Google Cloud terms accepted after explicit owner approval, Egypt, marketing unchecked.
 
-- Live project quotas, current provider settings, authorized domains and app identifiers.
-- Production rules deployment, App Check provider/site key/enforcement.
-- Real Google OAuth, password reset delivery, live registration/review and cross-device acceptance.
-- First owner UID binding, account approval and production privileged bootstrap.
-- Dedicated suspension/reactivation management UI; transaction/rules support exists and is tested.
-- Operational modules, per-customer operational queries, money, backup/restore, QR.
+## Still to do
 
-No live Firebase mutation, public site publication or billing change was made for the Spark revision. Test credentials and accounts are synthetic and local only.
+Final visual approval, source comparison, configured static build publication, real App Check token acceptance then enforcement, owner email/password signup, exact live UID binding, administrative owner-only verification exception/bootstrap, real owner/non-owner acceptance, Google OAuth and password-reset delivery checks. No production owner has been created or promoted at this checkpoint. Real visitor reporting is not enabled by a forgeable Firestore counter. Analytics linkage/report route is under review.
 
-Runtime audits previously reported zero vulnerabilities; the development Firebase CLI tree had 14 moderate transitive advisories. That older audit is not a fresh full dependency-security assessment.
+No Cloud Functions runtime is used by active registration/review. Historical callable files are retained but excluded from active Firebase deployment configuration. Client registration starts pending with no permissions, owner cannot be self-selected and unverified ordinary accounts cannot be approved.
 
-## Latest acceptance additions
-
-Email verification screen, resend and fresh-token recheck pass in browser emulators. Unverified approval is denied by rules. Verification refresh permits only a token-backed false-to-true verification update and timestamp, never role/status/permissions. An owner cannot operate with an unverified auth token.
-
-Owner account total, paging, suspend and reactivate UI pass against emulators; each decision appends its audit. Registration and last-login times use Cairo display. Device label is browser-reported; two unit tests assert no fabricated iPhone precision and Android model/fallback parsing. Activity negative tests deny another-user writes, backdated timestamps, extra fields and non-owner reads. The latest sign-in replaces the previous activity document.
-
-Live rules and Pages authorized-domain setting were applied after explicit activation approval. App Check remains unconfigured pending a Google Cloud terms decision. No live account, owner promotion or revised build publication has occurred at this checkpoint.
+JS bundle is roughly 632 kB before gzip, with the Vite size warning. Historical dependency audit findings are not a fresh security audit.
