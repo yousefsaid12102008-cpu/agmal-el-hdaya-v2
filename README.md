@@ -1,8 +1,19 @@
 # أجمل الهدايا ERP
 
-Phase 1 work in progress. Arabic RTL, Cairo, black/gold identity.
+Arabic RTL, Cairo, black/gold identity. Phase 1 is in progress, not ready for shop operations or financial records.
 
-This source is for review. It is not ready for shop operations, customer records, money, or production deployment.
+## Current checkpoint: Spark-only account flow
+
+The review branch replaces callable registration/review with Firebase Auth and Firestore client transactions, independently enforced by security rules. No Cloud Functions or paid runtime is required by the active application.
+
+- Email/password and Google sign-in clients.
+- Customer/employee requested account type, always pending with no permissions.
+- Owner-only review with explicit role/permission selection and confirmation.
+- Atomic profile plus append-only audit writes. Neither half can be committed alone.
+- Rules reject self-promotion, owner changes, forged email/verification, invalid permission scope, audit tampering and stale decisions.
+- Active owner can review pending accounts. The transaction/rules layer also supports active-to-suspended and suspended-to-active transitions; dedicated management UI is not implemented yet.
+- Operational collections remain denied to every client until their modules pass acceptance tests.
+- No first-signup owner shortcut. First owner requires a separately approved privileged bootstrap for an exact verified UID.
 
 ## Run locally
 
@@ -11,58 +22,40 @@ npm ci
 npm run dev
 npm test
 npm run build
-node phase1-v11-smoke.mjs
-# Node 22 and Java 21+
+# Node 22 and Java 21+; admin SDK is used only by isolated test fixtures.
 npm --prefix functions ci
 npm run test:emulators
 ```
 
-The screenshot test uses Google Chrome at `/usr/bin/google-chrome`. Adjust that path for another machine.
+Emulator command starts only Auth and Firestore against `demo-agaml-phase1`. Browser tests expect Google Chrome at `/usr/bin/google-chrome`.
 
-Development-only design views:
-- `#review/owner`
-- `#review/employee`
-- `#review/customer`
+The `functions/` callable code and `tests/functions.emulator.js` are historical comparison material from the superseded paid-runtime design. They are not selected by `firebase.json`, imported as callable services, deployed, or run by the current emulator command. The client reuses only the pure permission validator in `functions/src/policy.js`.
 
-These routes only render labelled design previews. They do not authenticate users and are disabled by the production environment check.
+Development-only labelled design views: `#review/owner`, `#review/employee`, `#review/customer`. Public `#preview/accounts` is a disabled illustrative preview only when Firebase is unconfigured.
 
-## Current implementation
+## Production remains gated
 
-- Reviewed cinematic login and separate storefront concept.
-- Responsive owner, employee and customer dashboard design concepts.
-- Firebase client initialized only when required environment configuration exists. Login remains disabled without it.
-- Server-side registration/review callable drafts: customer or employee is a requested account type, never a self-granted role. Both create pending profiles with no operational permissions. Owner-only review, atomic profile/audit writes and App Check enforcement outside emulators are drafted.
-- Default-deny Firestore rules. Operational collections remain closed.
-- 19 unit tests, local UI checks and six Firestore/Auth/Functions emulator suites pass. The emulator integration also checks second-client suspension propagation.
+The existing public site still serves the approved v16 read-only preview. This Spark revision is review-branch source only. Do not blindly merge over the main branch's static Pages entry.
 
-All dashboard figures remain unavailable until real data services are built and connected. No chart, total or online/sync success is invented. Sidebar module names describe planned screens, not completed operational modules.
+No live Firebase configuration, rules or billing changes were made for this revision. Copy `.env.example` locally only after verifying the existing `agmal-el-hdaya-erp` web-app configuration. Preserve the existing `me-central2` Firestore database. No second project, Blaze upgrade or payment is approved.
 
-## Agreed scope
+Before live activation: verify Spark/database state, Email/Google providers and authorized domain, deploy reviewed rules, confirm exact first-owner identity, apply a separately approved bootstrap, configure and verify App Check, then run real account acceptance checks. The optional App Check client uses reCAPTCHA v3; no site key or enforcement was enabled here. Never put admin credentials, service-account keys or real customer data in this public repository.
 
-- Continue the existing `agmal-el-hdaya-v2` repository. Keep it public as requested. Do not include secrets.
-- Central Firebase storage, not a local browser database.
-- Owner administers the system. Employee/cashier daily-work access excludes profits, global balances, financial reports and settings. New accounts may request customer or employee status, but every account remains pending owner approval with no operational access. Customers later access only their own purchases/orders/account.
-- The latest five-phase blueprint governs names and paths. Only implemented foundation files are included now. Future module files will be added with their real implementations and tests, not empty stubs.
-- Keep old Git history. No real-sales data migration is planned because the previous local edition was an experiment.
+## Free-plan bounds
 
-## Firebase setup still required
+Firestore Standard free quota: 1 GiB storage, 50,000 document reads/day, 20,000 writes/day, 20,000 deletes/day, 10 GiB outbound/month. Exactly one free database per project. Each registration/decision writes both a profile and an audit entry; rules reads and listeners also consume reads. Spark can stop serving a quota-limited product rather than silently bill overages. Do not upgrade automatically.
 
-The selected existing project is `agmal-el-hdaya-erp`, with its current `me-central2` database location. It remains on Spark; no billing upgrade is approved. Live rules still deny all.
+Auth has abuse/rate limits. Spark password-reset emails are limited to 150/day and verification emails to 1,000/day. Phone SMS, paid server runtimes, scheduled server jobs and managed backup/restore are not included in this implementation. This is not a promise that a growing ERP will run within free quotas forever.
 
-Copy `.env.example` to a local `.env` and supply verified web app configuration only when live backend setup is ready. Never include service-account keys or other server secrets in client code. Client Firebase web app identifiers are not server credentials, but configuration alone does not secure data.
+Sources checked 21 November 2026:
+- https://firebase.google.com/pricing
+- https://firebase.google.com/docs/firestore/quotas
+- https://firebase.google.com/docs/auth/limits
+- https://firebase.google.com/docs/firestore/security/rules-conditions
+- https://firebase.google.com/docs/firestore/manage-data/transactions
+- https://firebase.google.com/docs/auth/web/google-signin
+- https://firebase.google.com/docs/auth/web/password-auth
 
-Project ownership/current setup, region, providers, App Check, owner bootstrap, and any billing/deployment need verification and approved setup. No existing project has been changed by this source revision.
+## Scope still incomplete
 
-## Not complete
-
-Live Google/email authentication, live owner approval acceptance, production owner bootstrap, live suspension/cross-device acceptance tests, real operational modules, financial ledger, backups/restore, deployment and final security review. Phase 1 is not complete while these foundation items remain unverified.
-
-## Static preview deployment
-
-The main branch serves a development-only static build on the existing GitHub Pages site. Login and signup remain disabled. The review branch carries expanded source work and must not be merged blindly over the Pages entry. File upload prefixes are reflected in the deployed asset references; keep JS/CSS/image names aligned when replacing a build. No operational backend is deployed.
-
-## Owner approval screen: awaiting visual review
-
-Local implementation uses real pending-profile listeners and the owner-only review callable, with explicit role/permission selection, confirmation, audit writes and stale-decision protection. All permissions begin off. It is not published or connected to live Firebase yet. `npm run test:emulators` now runs the bootstrap rehearsal, the six security/callable suites and a browser approval workflow. The workflow uses synthetic local accounts, checks cancellation/approval/rejection, audit, stale updates, owner suspension, staff denial and mobile layout.
-
-The first-owner procedure is emulator-only preparation. See `docs/OWNER-BOOTSTRAP.md`; no public owner-signup route or live promotion command exists.
+Live Auth/Google OAuth, App Check, production bootstrap and real-project acceptance remain unverified. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
