@@ -5,8 +5,8 @@ import {footerContact} from './config/contact.js';
 import {renderStore} from './pages/storefront.js';
 import './styles/main.css';
 import './styles/cinematic.css';
-import {configured} from './config/firebase.js';
-import {login,requestAccount,googleLogin,watchAuth,ensureProfile,logout,resetPassword} from './services/auth.service.js';
+import {auth,configured} from './config/firebase.js';
+import {login,requestAccount,googleLogin,watchAuth,ensureProfile,logout,resetPassword,sendVerification,recheckVerification} from './services/auth.service.js';
 import {watchProfile} from './services/user.service.js';
 import {formatDate} from './utils/formatters.js';
 const root=document.querySelector('#app');
@@ -48,9 +48,15 @@ function authView(){
  document.querySelector('#google').onclick=()=>run(()=>googleLogin(document.querySelector('input[name=accountType]:checked')?.value||'customer'));
  document.querySelector('#reset').onclick=()=>run(async()=>{const input=document.querySelector('#email');if(!input.reportValidity()||!input.value)return;await resetPassword(input.value);document.querySelector('#status').textContent='لو البريد مسجل، هيوصلك رابط استعادة كلمة المرور.';});
 }
-async function run(action){if(busy)return;busy=true;root.setAttribute('aria-busy','true');root.querySelectorAll('button').forEach(b=>b.disabled=true);try{await action();}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}finally{busy=false;root.removeAttribute('aria-busy');if(document.querySelector('#auth-form'))root.querySelectorAll('button').forEach(b=>b.disabled=!configured&&b.id!=='switch');}}
+async function run(action){if(busy)return;busy=true;root.setAttribute('aria-busy','true');root.querySelectorAll('button').forEach(b=>b.disabled=true);try{await action();}catch(error){const status=document.querySelector('#status');if(status)status.textContent=friendly(error);}finally{busy=false;root.removeAttribute('aria-busy');if(document.querySelector('#verify-check'))root.querySelectorAll('button').forEach(b=>b.disabled=false);if(document.querySelector('#auth-form'))root.querySelectorAll('button').forEach(b=>b.disabled=!configured&&b.id!=='switch');}}
 function sessionView(profile){
  viewStop();viewStop=()=>{};
+ if(auth?.currentUser && !auth.currentUser.emailVerified){
+  root.innerHTML=`<main class="workspace" dir="rtl"><section class="welcome"><span class="eyebrow">أجمل الهدايا · تأكيد البريد</span><h1>أكد بريدك الإلكتروني</h1><p>افتح رسالة التأكيد في بريدك واضغط الرابط، ثم ارجع واضغط «تحققت من بريدي». راجع الرسائل غير المرغوب فيها أيضًا.</p><div class="notice"><strong>لن يعمل الحساب قبل تأكيد البريد وموافقة المالك.</strong><p>تأكيد البريد لا يمنحك أي صلاحيات تلقائيًا.</p></div><button class="primary" id="verify-check">تحققت من بريدي</button><button class="secondary" id="verify-resend">إعادة إرسال رسالة التأكيد</button><button class="text-button" id="logout">تسجيل الخروج</button><p id="status" role="status"></p></section></main>`;
+  document.querySelector('#verify-check').onclick=()=>run(async()=>{if(await recheckVerification())sessionView(null);else document.querySelector('#status').textContent='البريد لم يتأكد بعد. افتح رابط الرسالة أولًا.';});
+  document.querySelector('#verify-resend').onclick=()=>run(async()=>{await sendVerification();document.querySelector('#status').textContent='تم إرسال رسالة التأكيد. انتظر قليلًا قبل طلب رسالة أخرى.';});
+  document.querySelector('#logout').onclick=()=>run(logout);return;
+ }
  const active=profile?.status==='active';
  if(active){
   if(profile.role==='owner'&&ownerPage==='accounts'){
