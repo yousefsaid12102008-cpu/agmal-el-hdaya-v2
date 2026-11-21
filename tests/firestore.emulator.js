@@ -18,7 +18,7 @@ before(async()=>{
  });
 });
 after(async()=>env?.cleanup());
-const dbFor=uid=>uid?env.authenticatedContext(uid).firestore():env.unauthenticatedContext().firestore();
+const dbFor=uid=>uid?env.authenticatedContext(uid,{email_verified:true,email:uid+'@example.test'}).firestore():env.unauthenticatedContext().firestore();
 test('unauthenticated reads and writes are denied',async()=>{
  const db=dbFor();
  await assertFails(getDoc(doc(db,'users','customer')));
@@ -50,4 +50,13 @@ test('operational collections and unpaired client audit writes remain closed',as
   await assertFails(setDoc(doc(db,'accounts','cash'),{balance:99999}));
   await assertFails(setDoc(doc(db,'audit_logs','forged'),{actorUid:'owner'}));
  }
+});
+
+test('login activity is owner-readable and self-write-only with timestamp and strict fields',async()=>{
+ const {serverTimestamp,Timestamp}=await import('firebase/firestore');const own=dbFor('employee'),ref=doc(own,'login_activity','employee');
+ await assertSucceeds(setDoc(ref,{lastSignInAt:serverTimestamp(),deviceLabel:'iPhone · iOS',source:'client-reported'}));
+ await assertFails(getDoc(ref));await assertSucceeds(getDoc(doc(dbFor('owner'),'login_activity','employee')));
+ await assertFails(setDoc(doc(own,'login_activity','customer'),{lastSignInAt:serverTimestamp(),deviceLabel:'Fake',source:'client-reported'}));
+ await assertFails(setDoc(ref,{lastSignInAt:Timestamp.fromMillis(1),deviceLabel:'Fake',source:'client-reported'}));
+ await assertFails(setDoc(ref,{lastSignInAt:serverTimestamp(),deviceLabel:'Fake',source:'client-reported',role:'owner'}));
 });
