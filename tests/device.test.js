@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {deviceLabel} from '../src/utils/device.js';
+test('device labels never invent an exact iPhone model',async()=>{assert.equal(await deviceLabel({userAgent:'Mozilla iPhone CPU iPhone OS 19_0 like Mac OS X'}),'iPhone · iOS 19.0');});
+test('Android exposes only actual reported model and generic fallback',async()=>{assert.equal(await deviceLabel({userAgent:'Mozilla (Linux; Android 16; K) AppleWebKit Mobile'}),'Android phone · Android 16');assert.equal(await deviceLabel({userAgent:'Mozilla (Linux; Android 16; SM-S938B Build/ABC) Mobile'}),'SM-S938B · Android 16');});
