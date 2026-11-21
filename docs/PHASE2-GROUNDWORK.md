@@ -58,3 +58,7 @@ Review-only product/label/composer/invoice modules now load on demand, and Analy
 ### Financial execution gate
 
 The original spec requires trusted backend execution for sensitive financial operations. Firebase's official Cloud Functions setup guide says production deployment requires Blaze: https://firebase.google.com/docs/functions/get-started . That specified route conflicts with the current no-billing-change/Spark-only constraint. No paid service was enabled and no browser-only financial issuance was substituted. A separately approved compatible backend and transaction/idempotency acceptance are still required before real invoice issuance.
+
+### Expanded draft UX review
+
+Synthetic catalog search and camera QR/Code128 reader, exact-money composer, Cairo device time, optional local image watermark/opacity/remove, color/monochrome print, A4 raster PDF download and user-operated file share have been added behind preview gates. No backend is connected to these features. Camera was tested with a generated QR video input, not a physical phone. Sharing APIs were simulated to verify the user-gesture path and fallback, no real recipient or WhatsApp send. PDF generation has a one-page A4 limit and guides longer output to browser print-to-PDF. No real invoice number, server issue timestamp, stock write, receipt, payment, or persistent draft exists. Backend alternatives are under separate feasibility review; no provider account/deployment/key/billing changes are authorized.
