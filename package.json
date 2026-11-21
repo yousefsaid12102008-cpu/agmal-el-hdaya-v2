@@ -1,0 +1,32 @@
+{
+  "name": "agaml-erp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test:emulators": "node scripts/test-emulators.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "12.19.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "@playwright/test": "^1.65.1",
+    "firebase-tools": "^15.37.0",
+    "vite": "^8.3.8"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.13.6",
+    "@firebase/app": "0.16.2",
+    "@firebase/app-compat": "0.5.18"
+  },
+  "type": "module",
+  "private": true
+}
