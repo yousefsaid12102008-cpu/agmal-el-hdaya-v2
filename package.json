@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test:invoice-preview": "node tests/invoice.ui.mjs",
-    "test:emulators": "node scripts/test-emulators.mjs"
+    "test:emulators": "node scripts/test-emulators.mjs",
+    "test:products-preview": "node tests/products.ui.mjs"
   },
   "keywords": [],
   "author": "",
