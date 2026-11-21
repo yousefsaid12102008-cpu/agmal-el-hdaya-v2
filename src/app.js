@@ -33,7 +33,7 @@ function icon(name){
 }
 function authView(){
  viewStop();viewStop=()=>{};ownerPage='dashboard';
- if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){renderInvoicePreview(root);return;}
+ if(location.hash==='#preview/invoice'&&(import.meta.env.DEV||import.meta.env.VITE_REVIEW_PREVIEWS==='true')){viewStop=renderInvoicePreview(root);return;}
  if(location.hash==='#preview/accounts'&&!configured){
   const examples=[{uid:'example-employee',displayName:'طلب موظف توضيحي',email:'employee@example.test',emailVerified:false,requestedRole:'employee'},{uid:'example-customer',displayName:'طلب عميل توضيحي',email:'customer@example.test',emailVerified:false,requestedRole:'customer'}];
   viewStop=renderApprovals(root,{preview:true,watch:next=>{queueMicrotask(()=>next(examples));return ()=>{};},onBack:()=>location.hash='#team',onLogout:()=>location.hash='#team'});return;
