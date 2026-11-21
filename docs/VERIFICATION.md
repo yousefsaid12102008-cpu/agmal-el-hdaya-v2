@@ -32,3 +32,10 @@ JS bundle is roughly 650 kB before gzip, with the Vite size warning. Historical 
 ## Review-only layouts checked after activation
 
 Products list search/category filters, correct row-to-card binding, units/warehouse tabs, invoice navigation and 320/390px overflow checks pass. Desktop/mobile/card screenshots were inspected. Invoice A4 and 80mm preview/PDF checks pass; physical printers remain untested. All sample catalog, stock, payment and invoice values are synthetic and labeled. These preview tests do not certify actual barcode claims, transfers, stock concurrency, valuation or financial issuance. The full account emulator/browser regression was rerun successfully after these source changes.
+
+### Expanded review checks
+
+- `npm run test:composer-expanded`: selectable/searchable synthetic catalog; QR from synthetic camera stream, tracks stopped after decode; A4 PDF download; timestamp/source; optional local watermark image/opacity/remove; draft export invalidation; supported/unsupported device-sharing branches mocked, no external send; responsive widths 320/390/768.
+- PDF visually inspected after render, A4 one page, color logo/totals, no default watermark, roughly 200KB JPEG-based proof.
+- Production dependency audit: zero advisories at check time. Existing dev-tool advisories remain.
+- Built review initial login ~1.7s in local synthetic throttling (4x CPU, 120ms, 200KB/s). QR/camera/export chunks lazy. Not a device/network guarantee.
