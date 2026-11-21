@@ -4,14 +4,14 @@ Arabic RTL, Cairo, black/gold identity. Phase 1 is in progress, not ready for sh
 
 ## Current checkpoint: Spark-only account flow
 
-The review branch replaces callable registration/review with Firebase Auth and Firestore client transactions, independently enforced by security rules. No Cloud Functions or paid runtime is required by the active application.
+The active account flow replaces callable registration/review with Firebase Auth and Firestore client transactions, independently enforced by security rules. No Cloud Functions or paid runtime is required by the active application.
 
 - Email/password and Google sign-in clients.
 - Customer/employee requested account type, always pending with no permissions.
 - Owner-only review with explicit role/permission selection and confirmation.
 - Atomic profile plus append-only audit writes. Neither half can be committed alone.
 - Rules reject self-promotion, owner changes, forged email/verification, invalid permission scope, audit tampering and stale decisions.
-- Active owner can review pending accounts. The transaction/rules layer also supports active-to-suspended and suspended-to-active transitions; dedicated management UI is not implemented yet.
+- Active owner can review pending accounts. Owner account management supports suspension/reactivation, with a confirmation and audit entry.
 - Operational collections remain denied to every client until their modules pass acceptance tests.
 - No first-signup owner shortcut. First owner requires a separately approved privileged bootstrap for an exact verified UID.
 
@@ -33,13 +33,13 @@ The `functions/` callable code and `tests/functions.emulator.js` are historical 
 
 Development-only labelled design views: `#review/owner`, `#review/employee`, `#review/customer`. Public `#preview/accounts` is a disabled illustrative preview only when Firebase is unconfigured.
 
-## Production remains gated
+## Production and review builds are separate
 
-The existing public site still serves the approved v16 read-only preview. This Spark revision is review-branch source only. Do not blindly merge over the main branch's static Pages entry.
+The approved v17 Phase 1 build is live on GitHub Pages. Its main-branch release commit is `c057007ebdc84b9301cd428923d1cc07dbeb42d5`. The current review branch additionally contains Phase 2 inventory layouts and early invoice design work, not approved live features. Do not blindly merge this source over the main branch's static Pages entry. Live publication needs a separate visual approval.
 
-No live Firebase configuration, rules or billing changes were made for this revision. Copy `.env.example` locally only after verifying the existing `agmal-el-hdaya-erp` web-app configuration. Preserve the existing `me-central2` Firestore database. No second project, Blaze upgrade or payment is approved.
+The existing `agmal-el-hdaya-erp` project and `me-central2` database are retained on Spark. No second project, billing upgrade or payment is approved. Reviewed account/history rules were published during activation. Email/password and Google providers are enabled and the Pages hostname is authorized. The configured Enterprise App Check client obtained a production token; Firestore enforcement was enabled during activation. Authentication App Check remains unenforced. These are deployment checkpoints, not proof of end-to-end account acceptance.
 
-Before live activation: verify Spark/database state, Email/Google providers and authorized domain, deploy reviewed rules, confirm exact first-owner identity, apply a separately approved bootstrap, configure and verify App Check, then run real account acceptance checks. The optional App Check client uses reCAPTCHA v3; no site key or enforcement was enabled here. Never put admin credentials, service-account keys or real customer data in this public repository.
+The exact first-owner account has not yet been bound or promoted. Owner signup/identity confirmation, controlled bootstrap and real owner/non-owner acceptance remain required. Google OAuth and password-reset email delivery still need real-account tests. Never put admin credentials, service-account keys or real customer data in this public repository. Use `.env.example` as a shape only and verify the actual existing web-app configuration privately.
 
 ## Free-plan bounds
 
@@ -58,13 +58,13 @@ Sources checked 21 November 2026:
 
 ## Scope still incomplete
 
-Live Auth/Google OAuth, App Check, production bootstrap and real-project acceptance remain unverified. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
+Real first-owner/non-owner acceptance, Google OAuth, password-reset delivery and production bootstrap remain incomplete. Live signup/login UI and an App Check token exchange were checked, but those do not replace account acceptance. Stock, sales, invoices, treasury, orders, reports, QR and backup workflows are later work. Dashboard figures are unavailable, not fake zeroes. Preview concepts are labelled. The invoice reference is private and is not included here.
 
-## Activation update: email verification and owner management
+## Account management
 
-The latest review adds verification email/resend/reload with mandatory verified token before dashboard access, an owner-only aggregate registered-profile count, paged account management with suspension/reactivation, and registration/latest-login/device details. Only the latest client-reported sign-in is retained, not full history. Browsers may hide exact phone models; the UI never invents them. Activity reads are owner-only; users may write only their own fixed-shape current-timestamp activity. Each sign-in adds one write, and each account page reads at most 50 profiles plus their activity documents.
+Verification email/resend/reload requires a verified token before ordinary account access. Owner-only pages include registered-profile count, paged account management, suspension/reactivation and registration/latest-login/device detail. The owner-only verification exception applies solely to the exact first-owner account after private identity binding, not to ordinary users.
 
-Live setup progress: reviewed rules were published and the existing Pages hostname authorized on 21 November 2026. Providers were already enabled. App Check setup is waiting on a Google Cloud terms decision. No new site build or owner bootstrap yet. The owner has chosen email/password signup and an explicitly controlled administrative verification exception for his own first-owner bootstrap, not an exemption for other accounts.
+Full paged client login history replaces the older latest-only activity design. Browsers may hide exact phone models, and the UI never invents them. Account pages fetch at most 50 profiles plus their latest events; older profiles and history load on demand. No owner account has been promoted yet.
 
 ## Login history on Spark
 
@@ -75,3 +75,9 @@ One write per sign-in consumes the Firestore daily write allowance. At 1,000 sig
 ## Visitor reporting
 
 The existing linked Google Analytics web property is initialized only in production when VITE_FIREBASE_MEASUREMENT_ID is configured. No custom events, user IDs, account details or device-model fields are sent by application code. Standard SDK/property collection settings apply. View visitors in Firebase/Google Analytics, not a client-writable Firestore counter. Browser blocking/consent settings can affect measurement; a missing report is not proof of no visitors. No in-app reporting API or invented zero is provided.
+
+## Review-only next-stage layouts
+
+`#preview/products` shows product cards, units and warehouses. `#preview/invoice` shows A4 and 80mm invoice layouts. Both routes are development-only unless explicitly enabled with `VITE_REVIEW_PREVIEWS=true`. Examples are synthetic and clearly labeled, with no business writes or local stock persistence. Unit conversion and integer-money helpers are groundwork, not trusted operational issuance. See `docs/PHASE2-GROUNDWORK.md` for scope, limitations and unresolved requirements.
+
+Run `npm run test:products-preview` and `npm run test:invoice-preview` for their browser checks. The current unit suite has 24 passing tests. The production build still warns about a roughly 650KB JavaScript chunk before gzip.
