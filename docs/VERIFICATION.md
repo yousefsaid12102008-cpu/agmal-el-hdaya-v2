@@ -1,10 +1,10 @@
 # Spark activation checkpoint, 21 November 2026
 
-Status: source updated and emulator-tested. The reviewed v16 static preview remains live pending final visual approval. Phase 1 is not complete.
+Status: the approved v17 Phase 1 build is live. Phase 1 remains incomplete until exact-owner binding/bootstrap and real account acceptance finish. Additional products/units/warehouses and invoice previews exist only on the review branch, with operational writes closed.
 
 ## Tests passed
 
-21 policy, signup-payload and device unit tests. Production Vite build. Bootstrap rehearsal and 7 Auth/Firestore rules/integration tests. Browser tests cover signup, token-backed email verification refresh, reload/logout/login, owner approval/rejection, exact permissions, audit, cancellation, stale state, suspension/reactivation, owner detail card and login history. Explore navigation works. Mobile 320/390px layout has no horizontal overflow.
+24 policy, signup-payload, device and initial invoice/inventory unit tests. Production Vite build. Bootstrap rehearsal and 7 Auth/Firestore rules/integration tests. Browser tests cover signup, token-backed email verification refresh, reload/logout/login, owner approval/rejection, exact permissions, audit, cancellation, stale state, suspension/reactivation, owner detail card and login history. Explore navigation works. Mobile 320/390px layout has no horizontal overflow.
 
 Negative tests deny self-promotion, privileged signup, forged email/verification, extra fields, unauthorized finance scope, profile changes without a paired audit, audit edits/deletes and suspended-owner access. Operational collections remain closed. Google token fixtures do not establish real Google OAuth acceptance.
 
@@ -16,12 +16,19 @@ This browser-driven event log is best-effort, not an authoritative Firebase auth
 
 ## Live changes already made under activation approval
 
-Existing project agmal-el-hdaya-erp remains on Spark, with no billing account, paid trial or new project. Email/password and Google providers enabled, Pages hostname authorized. Earlier tested rules published, with the new history rules still awaiting final publish. Supported score-based Enterprise/Fraud Defense key created for the production Pages hostname, provider registered in App Check with 1-hour TTL. No enforcement until a production token test succeeds. Standard Google Cloud terms accepted after explicit owner approval, Egypt, marketing unchecked.
+Existing project agmal-el-hdaya-erp remains on Spark, with no billing account, paid trial or new project. Email/password and Google providers enabled, Pages hostname authorized. The tested account and append-only history rules were published and the live editor was compared with the tested source. Supported score-based Enterprise/Fraud Defense key created for the production Pages hostname, provider registered in App Check with 1-hour TTL. Production browser acceptance obtained an App Check token with HTTP 200, then Firestore enforcement was enabled and checked in the console. Authentication App Check remains unenforced. Standard Google Cloud terms accepted after explicit owner approval, Egypt, marketing unchecked.
 
 ## Still to do
 
-Final visual approval, source comparison, configured static build publication, real App Check token acceptance then enforcement, owner email/password signup, exact live UID binding, administrative owner-only verification exception/bootstrap, real owner/non-owner acceptance, Google OAuth and password-reset delivery checks. No production owner has been created or promoted at this checkpoint. Real visitor reporting is not enabled by a forgeable Firestore counter. Analytics linkage/report route is under review.
+Owner email/password signup, exact live UID/email binding, administrative owner-only verification exception/bootstrap, real owner/non-owner acceptance, Google OAuth and password-reset delivery checks. No production owner has been created or promoted at this checkpoint.
+
+Final visual approval and v17 publication are complete. Live remote entry/script/style files matched the reviewed release files. Browser checks confirmed enabled real-auth UI, correct title, Explore navigation, desktop/mobile overflow checks and no page errors. This does not claim a completed real account sign-in. Minimal production Analytics initialization produced HTTP 204 collection traffic; no visitor count is invented in the app. SDK/property default collection settings and browser blocking still apply.
 
 No Cloud Functions runtime is used by active registration/review. Historical callable files are retained but excluded from active Firebase deployment configuration. Client registration starts pending with no permissions, owner cannot be self-selected and unverified ordinary accounts cannot be approved.
 
-JS bundle is roughly 632 kB before gzip, with the Vite size warning. Historical dependency audit findings are not a fresh security audit.
+JS bundle is roughly 650 kB before gzip, with the Vite size warning. Historical dependency audit findings are not a fresh security audit.
+
+
+## Review-only layouts checked after activation
+
+Products list search/category filters, correct row-to-card binding, units/warehouse tabs, invoice navigation and 320/390px overflow checks pass. Desktop/mobile/card screenshots were inspected. Invoice A4 and 80mm preview/PDF checks pass; physical printers remain untested. All sample catalog, stock, payment and invoice values are synthetic and labeled. These preview tests do not certify actual barcode claims, transfers, stock concurrency, valuation or financial issuance. The full account emulator/browser regression was rerun successfully after these source changes.
