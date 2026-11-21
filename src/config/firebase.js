@@ -1,38 +1,17 @@
-
-<script type="module">
-  const firebaseStatus = document.getElementById("firebaseStatus");
-  const authStatus = document.getElementById("authStatus");
-  const firestoreStatus = document.getElementById("firestoreStatus");
-
-  function show(id, message, success) {
-    const el = document.getElementById(id);
-    el.textContent = message;
-    el.className = success ? "status-success" : "status-error";
-  }
-
-  try {
-    show("firebaseStatus", "● Firebase: جاري التحميل...", true);
-
-    const firebase = await import("./src/config/firebase.js");
-
-    if (!firebase.app || !firebase.auth || !firebase.db) {
-      throw new Error("Firebase exports are missing");
-    }
-
-    show("firebaseStatus", "● Firebase: تم التهيئة بنجاح", true);
-    show("authStatus", "● Authentication: تم تحميل الخدمة", true);
-    show("firestoreStatus", "● Firestore: تم تحميل الخدمة", true);
-
-  } catch (error) {
-    console.error("Firebase test error:", error);
-
-    show(
-      "firebaseStatus",
-      "● Firebase: فشل الاتصال - " + error.message,
-      false
-    );
-
-    show("authStatus", "● Authentication: لم يتم التحميل", false);
-    show("firestoreStatus", "● Firestore: لم يتم التحميل", false);
-  }
-</script>
+import {initializeApp} from 'firebase/app';
+import {getAuth, connectAuthEmulator} from 'firebase/auth';
+import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
+import {getFunctions, connectFunctionsEmulator} from 'firebase/functions';
+import {initializeAppCheck, ReCaptchaEnterpriseProvider} from 'firebase/app-check';
+const env=import.meta.env;
+const config={apiKey:env.VITE_FIREBASE_API_KEY,authDomain:env.VITE_FIREBASE_AUTH_DOMAIN,projectId:env.VITE_FIREBASE_PROJECT_ID,appId:env.VITE_FIREBASE_APP_ID};
+export const configured=Object.values(config).every(Boolean) && Boolean(env.VITE_FIREBASE_REGION);
+export let auth=null,db=null,functions=null;
+if(configured){
+ const app=initializeApp(config);
+ if(env.VITE_FIREBASE_APPCHECK_SITE_KEY) initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider(env.VITE_FIREBASE_APPCHECK_SITE_KEY),isTokenAutoRefreshEnabled:true});
+ auth=getAuth(app); db=getFirestore(app); functions=getFunctions(app,env.VITE_FIREBASE_REGION);
+ if(env.DEV && env.VITE_FIREBASE_USE_EMULATORS==='true'){
+  connectAuthEmulator(auth,'http://127.0.0.1:9199'); connectFirestoreEmulator(db,'127.0.0.1',8180); connectFunctionsEmulator(functions,'127.0.0.1',5101);
+ }
+}
