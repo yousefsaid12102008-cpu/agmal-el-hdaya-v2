@@ -16,4 +16,4 @@ export async function resetPassword(email){ready();return sendPasswordResetEmail
 export async function sendVerification(){ready();if(auth.currentUser&&!auth.currentUser.emailVerified)return sendEmailVerification(auth.currentUser);}
 export async function recheckVerification(){ready();await reload(auth.currentUser);await auth.currentUser.getIdToken(true);if(!auth.currentUser.emailVerified)return false;await ensureProfile();return true;}
 
-async function recordLogin(){try{const label=await deviceLabel();await setDoc(doc(db,'login_activity',auth.currentUser.uid),{lastSignInAt:serverTimestamp(),deviceLabel:label,source:'client-reported'});}catch{console.warn('Login activity unavailable');}}
+async function recordLogin(){try{const label=await deviceLabel();const user=auth.currentUser,token=await user.getIdTokenResult();const authTime=token.claims.auth_time;await setDoc(doc(db,'login_events',user.uid,'events',String(authTime)),{authTime,recordedAt:serverTimestamp(),deviceLabel:label,source:'client-reported'});}catch{console.warn('Login activity unavailable');}}
