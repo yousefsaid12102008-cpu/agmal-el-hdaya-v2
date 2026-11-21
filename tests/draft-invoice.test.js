@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {parseDraftMoney,addDraftProduct} from '../src/utils/draft-invoice.js';
+test('draft decimal text parses exact integer piastres without float arithmetic',()=>{assert.equal(parseDraftMoney('12.30'),1230);assert.equal(parseDraftMoney('0.01'),1);for(const x of ['1e2','1.001','-1','Infinity','','01','90071992547409911'])assert.throws(()=>parseDraftMoney(x));});
+test('fixed product code adds one existing draft line, not duplicate line',()=>{const p={code:'D1',name:'demo',unitPricePiastres:15};const a=addDraftProduct([],p),b=addDraftProduct(a,p);assert.equal(b.length,1);assert.equal(b[0].quantity,2);assert.equal(a[0].quantity,1);assert.equal(addDraftProduct(b,{...p,code:'D2'}).length,2);});
