@@ -1,0 +1,25 @@
+/* Keep the selected physical stock unchanged. Center the content stack instead
+   of the older block override that left all unused height below the barcode. */
+@media print{
+ .product-label{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important}
+ .product-label>strong,.product-label code,.product-label b,.product-label-details{flex-shrink:0!important}
+ .product-label>strong,.product-label b{line-height:1.6!important}
+ .product-label>strong{order:1!important}.product-label img{order:2!important}.product-label code{order:3!important}.product-label-details{order:4!important}.product-label b{order:5!important}
+ .product-label-details{font-size:8pt!important;line-height:1.6!important;font-weight:500!important;max-height:none!important;margin:.7mm auto 0!important}
+ .product-label::after{content:"مكتبة أجمل الهدايا · 10 شارع زكريا رشوان، شبرا الخيمة";display:block;order:6;flex-shrink:0;width:100%;font-size:6pt;line-height:1.6;font-weight:600;margin-top:.8mm;text-align:center;overflow-wrap:normal}
+ .labels-print-overflow .label-sheet{display:none!important}
+ .labels-print-overflow .labels-print-fit-alert{display:block!important;font:14pt/1.8 Cairo,Arial;color:black;padding:10mm}
+}
+.labels-print-fit-alert{display:none}
+
+@media screen{
+ .label-sheet{container-type:inline-size}
+ .product-label{gap:0!important;padding:calc(.263cqw * var(--label-preview-ratio,1)) calc(.526cqw * var(--label-preview-ratio,1))!important}
+ .product-label>strong{order:1;font-size:calc(1.485cqw * var(--label-preview-ratio,1))!important;line-height:1.6!important;flex-shrink:0}
+ .product-label img{order:2;height:calc(7.368cqw * var(--label-preview-ratio,1))!important;max-height:none!important;width:calc(12.632cqw * var(--label-preview-ratio,1))!important;margin:calc(.316cqw * var(--label-preview-ratio,1)) auto!important;flex-shrink:0}
+ .product-label.code128 img{height:calc(5.263cqw * var(--label-preview-ratio,1))!important;width:calc(100% - calc(1.053cqw * var(--label-preview-ratio,1)))!important;max-width:calc(100% - calc(1.053cqw * var(--label-preview-ratio,1)))!important}
+ .product-label code{order:3;font-size:calc(1.3cqw * var(--label-preview-ratio,1))!important;line-height:1.2!important;margin:0!important;flex-shrink:0}
+ .product-label-details{order:4;color:#000;font-size:calc(1.485cqw * var(--label-preview-ratio,1))!important;line-height:1.6!important;margin:calc(.368cqw * var(--label-preview-ratio,1)) auto 0!important;max-height:none!important}
+ .product-label b{order:5;font-size:calc(1.485cqw * var(--label-preview-ratio,1))!important;line-height:1.6!important;margin:calc(.263cqw * var(--label-preview-ratio,1)) 0 0!important;flex-shrink:0}
+ .product-label::after{content:"مكتبة أجمل الهدايا · 10 شارع زكريا رشوان، شبرا الخيمة";display:block;order:6;flex-shrink:0;width:100%;font-size:calc(1.114cqw * var(--label-preview-ratio,1));line-height:1.6;font-weight:600;margin-top:calc(.421cqw * var(--label-preview-ratio,1));text-align:center;overflow-wrap:normal}
+}
